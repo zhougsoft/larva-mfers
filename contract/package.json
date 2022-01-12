@@ -1,10 +1,20 @@
 {
-  "dependencies": {
+	"name": "frontend-starter",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+    "test": "mocha",
+		"chain": "npx hardhat node",
+		"deploy": "npx hardhat run scripts/deploy.ts --network localhost",
+		"deploy:rinkeby": "npx hardhat run scripts/deploy.ts --network rinkeby"
+	},
+	"dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "^4.4.1",
+    "mocha": "^7.2.0",
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.5.3",
     "hardhat": "^2.8.2"
-  }
+	}
 }
