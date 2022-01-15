@@ -1,8 +1,10 @@
-# Basic Sample Hardhat Project
+## larva mfers contract
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+run a local chain: `npm run chain`
+deploy locally: `npm run deploy`
+deploy to rinkeby: `npm run deploy:rinkeby`
 
-Try running some of the following tasks:
+more hardhat stuff to explore:
 
 ```shell
 npx hardhat accounts
