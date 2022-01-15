@@ -1,8 +1,5 @@
-
-const { task } = require('hardhat/config');
 require('@nomiclabs/hardhat-waffle');
-
-require('dotenv').config()
+require('dotenv').config();
 
 task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 	const accounts = await hre.ethers.getSigners();
@@ -12,8 +9,8 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 	}
 });
 
-const hardhatConfig = {
-	solidity: '0.8.10',
+module.exports = {
+	solidity: '0.8.11',
 	paths: {
 		artifacts: './artifacts',
 	},
@@ -27,5 +24,3 @@ const hardhatConfig = {
 	// 	},
 	// },
 };
-
-module.exports = hardhatConfig;
