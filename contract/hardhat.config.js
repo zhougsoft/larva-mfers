@@ -1,8 +1,8 @@
-import * as dotenv from 'dotenv';
-import '@nomiclabs/hardhat-waffle';
-import { task } from 'hardhat/config';
 
-dotenv.config();
+const { task } = require('hardhat/config');
+require('@nomiclabs/hardhat-waffle');
+
+require('dotenv').config()
 
 task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 	const accounts = await hre.ethers.getSigners();
@@ -17,15 +17,15 @@ const hardhatConfig = {
 	paths: {
 		artifacts: './artifacts',
 	},
-	networks: {
-		hardhat: {
-			chainId: 1337,
-		},
-		rinkeby: {
-			url: process.env.INFURA_RINKEBY_URL,
-			accounts: [`0x${process.env.PRIVATE_KEY}`],
-		},
-	},
+	// networks: {
+	// 	hardhat: {
+	// 		chainId: 1337,
+	// 	},
+	// 	rinkeby: {
+	// 		url: process.env.INFURA_RINKEBY_URL,
+	// 		accounts: [`0x${process.env.PRIVATE_KEY}`],
+	// 	},
+	// },
 };
 
 module.exports = hardhatConfig;

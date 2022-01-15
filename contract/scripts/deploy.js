@@ -1,4 +1,4 @@
-import hre from 'hardhat';
+const hre= require('hardhat')
 
 async function main() {
 	const Greeter = await hre.ethers.getContractFactory('Greeter');
