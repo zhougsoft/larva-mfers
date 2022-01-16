@@ -181,8 +181,8 @@ contract LarvaMfers is ERC721, Ownable {
 		cost = _newCost;
 	}
 
-	function setMaxMintAmount(uint256 _newmaxMintAmount) public onlyOwner {
-		maxMintAmount = _newmaxMintAmount;
+	function setMaxMintAmount(uint256 _newMaxMintAmount) public onlyOwner {
+		maxMintAmount = _newMaxMintAmount;
 	}
 
 	function setMetadataFileExtension(string memory _newMetadataFileExtension)
