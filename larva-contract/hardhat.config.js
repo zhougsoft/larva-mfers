@@ -1,4 +1,5 @@
 require('@nomiclabs/hardhat-waffle');
+require('@nomiclabs/hardhat-etherscan');
 require('dotenv').config();
 
 task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
@@ -10,17 +11,29 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 });
 
 module.exports = {
-	solidity: '0.8.11',
+	solidity: {
+		version: '0.8.9',
+		settings: {
+			optimizer: {
+				enabled: true,
+				runs: 1000,
+			},
+		},
+	},
+
 	paths: {
 		artifacts: './artifacts',
 	},
-	// networks: {
-	// 	hardhat: {
-	// 		chainId: 1337,
-	// 	},
-	// 	rinkeby: {
-	// 		url: process.env.INFURA_RINKEBY_URL,
-	// 		accounts: [`0x${process.env.PRIVATE_KEY}`],
-	// 	},
-	// },
+	networks: {
+		hardhat: {
+			chainId: 1337,
+		},
+		rinkeby: {
+			url: process.env.INFURA_RINKEBY_URL,
+			accounts: [`0x${process.env.PRIVATE_KEY}`],
+		},
+	},
+	etherscan: {
+		apiKey: { rinkeby: process.env.ETHERSCAN_API_KEY },
+	},
 };
