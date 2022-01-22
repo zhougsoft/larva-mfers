@@ -13,6 +13,7 @@
   },
   "scripts": {
     "build": "node index.js",
+    "clean": "rm -rf build",
     "generate": "node index.js",
     "rarity": "node utils/rarity.js",
     "preview": "node utils/preview.js",
