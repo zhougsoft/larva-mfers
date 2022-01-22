@@ -5,8 +5,8 @@ const hre = require('hardhat');
 
 const { STAKEHOLDER_ADDRESS } = process.env;
 
-// RESULT ADDRESS FROM LARVA DEPLOYMENT
-const LARVA_CONTRACT_ADDY = '0x834B98D120ee16d0077a149d687d44a28E07b645';
+// RESULT ADDRESS FROM LARVA DEPLOYMENT(S)
+const LARVA_CONTRACT_ADDY = '0xCD1bbE719cE707342d4641b942a48E7f8de730bC';
 
 async function main() {
 	await hre.run('verify:verify', {

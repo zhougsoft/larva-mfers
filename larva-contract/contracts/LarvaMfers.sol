@@ -51,7 +51,7 @@ contract LarvaMfers is ERC721, Ownable {
 	address public constant MFERS_ADDRESS =
 		0xF94516Ec531a1a9B34de514342aE3Bc78B940aed;
 	address public constant DADMFERS_ADDRESS =
-		0x5FbDB2315678afecb367f032d93F642f64180aa3;
+		0x95F9c4301Ad181811a0575D0b015486E2c39aA71;
 
 	NFTContract mfersContract = NFTContract(MFERS_ADDRESS);
 	NFTContract dadmfersContract = NFTContract(DADMFERS_ADDRESS);
