@@ -13,10 +13,56 @@ const baseUri = 'ipfs://REPLACE/';
 // OPTIONAL: Metadata only applied if Solana network is selected
 const solanaMetadata = {};
 
+
+// CALCULATIN THE BULLSHAT
+
+// 10k
+
+const TOTAL_COMMONS = 8000;
+const COMMONS_MAGICS = 500;
+
+const TOTAL_ZOMBIES = 1000;
+const ZOMBIES_MAGICS = 50;
+
+const TOTAL_APES = 750;
+const APES_MAGICS = 25;
+
+const TOTAL_ALIENS = 250;
+const ALIENS_MAGICS = 10;
+
+
+const half = num => Math.round(num / 2);
+
+const TOTAL_RUN_AMOUNT = TOTAL_COMMONS + TOTAL_ZOMBIES + TOTAL_APES + TOTAL_ALIENS;
+
+const COMMONS_AMT1 = half(TOTAL_COMMONS);
+const COMMONS_MAGIC1 = COMMONS_AMT1 + half(COMMONS_MAGICS);
+const COMMONS_MAGIC2 = COMMONS_MAGIC1 + half(COMMONS_MAGICS);
+const COMMONS_AMT2 = TOTAL_COMMONS;
+
+const ZOMBIES_AMT1 = TOTAL_COMMONS + half(TOTAL_ZOMBIES);
+const ZOMBIES_MAGIC1 = ZOMBIES_AMT1 + half(ZOMBIES_MAGICS);
+const ZOMBIES_MAGIC2 = ZOMBIES_MAGIC1 + half(ZOMBIES_MAGICS);
+const ZOMBIES_AMT2 = TOTAL_ZOMBIES + TOTAL_COMMONS;
+
+const APES_AMT1 = ZOMBIES_AMT2 + half(TOTAL_APES);
+const APES_MAGIC1 = APES_AMT1 + half(APES_MAGICS);
+const APES_MAGIC2 = APES_MAGIC1 + half(APES_MAGICS);
+const APES_AMT2 = TOTAL_APES + TOTAL_COMMONS + TOTAL_ZOMBIES;
+
+const ALIENS_AMT1 = APES_AMT2 + half(TOTAL_ALIENS);
+const ALIENS_MAGIC1 = ALIENS_AMT1 + half(ALIENS_MAGICS);
+const ALIENS_MAGIC2 = ALIENS_MAGIC1 + half(ALIENS_MAGICS);
+const ALIENS_AMT2 = TOTAL_RUN_AMOUNT;
+
+
+
 const layerConfigurations = [
+	// --- COMMONS ---
+
 	// commons w/ hair & headphones
 	{
-		growEditionSizeTo: 2493,
+		growEditionSizeTo: COMMONS_AMT1,
 		layersOrder: [
 			{ name: 'Background' },
 			{ name: 'Type' },
@@ -27,11 +73,38 @@ const layerConfigurations = [
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
 			{ name: 'Smoke' },
+		],
+	},
+	// magic commons w/ hair & headphones
+	{
+		growEditionSizeTo: COMMONS_MAGIC1,
+		layersOrder: [
+			{ name: 'Background' },
+			{ name: 'Type' },
+			{ name: 'Outline' },
+			{ name: 'Mouth' },
+			{ name: 'Earring' },
+			{ name: 'Hair' },
+			{ name: 'Headphones' },
+			{ name: 'Magic' },
+		],
+	},
+	// magic commons w/ headware
+	{
+		growEditionSizeTo: COMMONS_MAGIC2,
+		layersOrder: [
+			{ name: 'Background' },
+			{ name: 'Type' },
+			{ name: 'Outline' },
+			{ name: 'Mouth' },
+			{ name: 'Earring' },
+			{ name: 'Headwear' },
+			{ name: 'Magic' },
 		],
 	},
 	// commons w/ headware
 	{
-		growEditionSizeTo: 4614,
+		growEditionSizeTo: COMMONS_AMT2,
 		layersOrder: [
 			{ name: 'Background' },
 			{ name: 'Type' },
@@ -43,9 +116,12 @@ const layerConfigurations = [
 			{ name: 'Smoke' },
 		],
 	},
+
+	//--- ZOMBIES ---
+
 	// zombies w/ hair & headphones
 	{
-		growEditionSizeTo: 4701,
+		growEditionSizeTo: ZOMBIES_AMT1,
 		layersOrder: [
 			{ name: 'Background' },
 			{ name: 'Zombie' },
@@ -56,9 +132,34 @@ const layerConfigurations = [
 			{ name: 'Smoke' },
 		],
 	},
+	// magic zombies w/ hair & headphones
+	{
+		growEditionSizeTo: ZOMBIES_MAGIC2,
+		layersOrder: [
+			{ name: 'Background' },
+			{ name: 'Zombie' },
+			{ name: 'Outline' },
+			{ name: 'Earring' },
+			{ name: 'Hair' },
+			{ name: 'Headphones' },
+			{ name: 'Magic' },
+		],
+	},
+	// magic zombies w/ headware
+	{
+		growEditionSizeTo: ZOMBIES_MAGIC2,
+		layersOrder: [
+			{ name: 'Background' },
+			{ name: 'Zombie' },
+			{ name: 'Outline' },
+			{ name: 'Headwear' },
+			{ name: 'Earring' },
+			{ name: 'Magic' },
+		],
+	},
 	// zombies w/ headware
 	{
-		growEditionSizeTo: 4794,
+		growEditionSizeTo: ZOMBIES_AMT2,
 		layersOrder: [
 			{ name: 'Background' },
 			{ name: 'Zombie' },
@@ -68,9 +169,12 @@ const layerConfigurations = [
 			{ name: 'Smoke' },
 		],
 	},
+
+	// --- APES ---
+
 	// apes w/ hair & headphones
 	{
-		growEditionSizeTo: 4903,
+		growEditionSizeTo: APES_AMT1,
 		layersOrder: [
 			{ name: 'Background' },
 			{ name: 'Ape' },
@@ -81,9 +185,34 @@ const layerConfigurations = [
 			{ name: 'Headphones' },
 		],
 	},
+	// magic apes w/ hair & headphones
+	{
+		growEditionSizeTo: APES_MAGIC1,
+		layersOrder: [
+			{ name: 'Background' },
+			{ name: 'Ape' },
+			{ name: 'Outline' },
+			{ name: 'Earring' },
+			{ name: 'Eyewear' },
+			{ name: 'Hair' },
+			{ name: 'Headphones' },
+		],
+	},
+	// magic apes w/ headware
+	{
+		growEditionSizeTo: APES_MAGIC2,
+		layersOrder: [
+			{ name: 'Background' },
+			{ name: 'Ape' },
+			{ name: 'Outline' },
+			{ name: 'Earring' },
+			{ name: 'Eyewear' },
+			{ name: 'Headwear' },
+		],
+	},
 	// apes w/ headware
 	{
-		growEditionSizeTo: 4943,
+		growEditionSizeTo: APES_AMT2,
 		layersOrder: [
 			{ name: 'Background' },
 			{ name: 'Ape' },
@@ -94,9 +223,11 @@ const layerConfigurations = [
 		],
 	},
 
+	// --- ALIENS ---
+
 	// aliens /w hair & headphones
 	{
-		growEditionSizeTo: 4974,
+		growEditionSizeTo: ALIENS_AMT1,
 		layersOrder: [
 			{ name: 'Background' },
 			{ name: 'Alien' },
@@ -107,9 +238,34 @@ const layerConfigurations = [
 			{ name: 'Smoke' },
 		],
 	},
+	// magic aliens /w hair & headphones
+	{
+		growEditionSizeTo: ALIENS_MAGIC1,
+		layersOrder: [
+			{ name: 'Background' },
+			{ name: 'Alien' },
+			{ name: 'Outline' },
+			{ name: 'Earring' },
+			{ name: 'Hair' },
+			{ name: 'Headphones' },
+			{ name: 'Magic' },
+		],
+	},
+	// magic aliens /w headware
+	{
+		growEditionSizeTo: ALIENS_MAGIC2,
+		layersOrder: [
+			{ name: 'Background' },
+			{ name: 'Alien' },
+			{ name: 'Outline' },
+			{ name: 'Earring' },
+			{ name: 'Headwear' },
+			{ name: 'Magic' },
+		],
+	},
 	// aliens /w headware
 	{
-		growEditionSizeTo: 5000,
+		growEditionSizeTo: ALIENS_AMT2,
 		layersOrder: [
 			{ name: 'Background' },
 			{ name: 'Alien' },
