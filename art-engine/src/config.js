@@ -8,7 +8,7 @@ const network = NETWORK.eth;
 const namePrefix = 'larva mfer';
 const description =
 	'Larva Mfers are a play on Larva Lads, and everything they were a play on as well. This project is in the public domain; feel free to use Larva Mfers any way you want.';
-const baseUri = 'ipfs://REPLACE/';
+const baseUri = 'ipfs://REPLACE';
 
 // OPTIONAL: Metadata only applied if Solana network is selected
 const solanaMetadata = {};
