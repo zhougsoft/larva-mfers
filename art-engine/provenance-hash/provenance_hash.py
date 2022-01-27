@@ -1,12 +1,12 @@
 import os
 import hashlib
 
-imgCount     = 10                        # <-- How many images are there?
-outputFolder = './renders'    # <-- Where are they?
-fmt          = "png"                     # <-- What format / file extension?
+imgCount     = 10000                    # <-- How many images are there?
+outputFolder = '../build/images'        # <-- Where are they?
+fmt          = "png"                    # <-- What format / file extension?
 
 def make_hash():
-    i                   = 0
+    i                   = 1
     concatenated_str    = ""
     provenance_hash     = ""
 
