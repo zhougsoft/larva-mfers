@@ -32,6 +32,10 @@ module.exports = {
 			url: process.env.INFURA_RINKEBY_URL,
 			accounts: [`0x${process.env.PRIVATE_KEY}`],
 		},
+		mumbai: {
+			url: 'https://rpc-mumbai.maticvigil.com',
+			accounts: [`0x${process.env.PRIVATE_KEY}`],
+		},
 	},
 	etherscan: {
 		apiKey: { rinkeby: process.env.ETHERSCAN_API_KEY },

@@ -5,23 +5,12 @@
 //  | , | | | \ |/  | |   |  | |   |   | \ , )
 //  ~~~ ~ ~ ~ ~ ~   ~ ~   ~  ~ ~   ~~~ ~ ~  ~
 
-// author: zhoug.eth <3
-// jan 2022
+// author: zhoug.eth
 
 pragma solidity ^0.8.9;
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
-interface NFTContract {
-	function ownerOf(uint256 tokenId) external view returns (address owner);
-
-	function balanceOf(address owner) external view returns (uint256);
-
-	function tokenOfOwnerByIndex(address owner, uint256 index)
-		external
-		view
-		returns (uint256);
-}
 
 contract LarvaMfers is ERC721, Ownable {
 	using Strings for uint256;
@@ -31,8 +20,8 @@ contract LarvaMfers is ERC721, Ownable {
 	string public hiddenURI;
 	string private baseURI;
 
-	uint256 public constant MAX_SUPPLY = 6969;
-	uint256 public constant MAX_VIP_SUPPLY = 2000;
+	uint256 public constant MAX_SUPPLY = 10000;
+	uint256 public constant MAX_VIP_SUPPLY = 2500;
 	uint256 public totalSupply;
 	uint256 public cost = 0.0030 ether;
 	uint256 public maxMintAmount = 10;
@@ -43,23 +32,10 @@ contract LarvaMfers is ERC721, Ownable {
 
 	address public stakeholderAddress;
 
-	// MAINNET
-	// address constant public MFERS_ADDRESS = 0x79FCDEF22feeD20eDDacbB2587640e45491b757f;
-	// address constant public DADMFERS_ADDRESS = 0x68CCdcf9d5CB0e61d72c0b31b654d6408A93C65a;
-
-	// RINKEBY
-	address public constant MFERS_ADDRESS =
-		0xF94516Ec531a1a9B34de514342aE3Bc78B940aed;
-	address public constant DADMFERS_ADDRESS =
-		0x95F9c4301Ad181811a0575D0b015486E2c39aA71;
-
-	NFTContract mfersContract = NFTContract(MFERS_ADDRESS);
-	NFTContract dadmfersContract = NFTContract(DADMFERS_ADDRESS);
-
 	// ---------------------------------------------------------------------------------- CONSTRUCTOOOR
 	constructor(address _stakeholderAddress) ERC721('larva mfers', 'LARMF') {
 		stakeholderAddress = _stakeholderAddress;
-		_batchMint(_stakeholderAddress, 15); // mint 1/1s
+		_batchMint(_stakeholderAddress, 15);
 	}
 
 	// ---------------------------------------------------------------------------------- MODiFiERs
@@ -125,17 +101,12 @@ contract LarvaMfers is ERC721, Ownable {
 		_batchMint(msg.sender, _amountOfTokens);
 	}
 
-	// ~* token-gated free mint *~
+	// ~* free mint *~
 	function vipMint(uint256 _amountOfTokens)
 		public
 		validMintInput(_amountOfTokens, MAX_VIP_SUPPLY)
 	{
 		require(vipMintIsActive, 'VIP mint closed');
-		require(
-			mfersContract.balanceOf(msg.sender) > 0 ||
-			dadmfersContract.balanceOf(msg.sender) > 0,
-			'Address not holding qualifying tokens'
-		);
 		require(
 			_amountOfTokens <= maxMintAmount,
 			'Transaction would exceed max mint amount'
