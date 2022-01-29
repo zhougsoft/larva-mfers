@@ -11,31 +11,30 @@ pragma solidity ^0.8.9;
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
-
 contract LarvaMfers is ERC721, Ownable {
 	using Strings for uint256;
 
+	address public stakeholderAddress;
+
+	string private baseURI;
+	string public hiddenURI;
 	string public metadataFileExtension = '.json';
 	string public provenance;
-	string public hiddenURI;
-	string private baseURI;
 
 	uint256 public constant MAX_SUPPLY = 10000;
-	uint256 public constant MAX_VIP_SUPPLY = 2500;
+	uint256 public constant MAX_FREE_SUPPLY = 2500;
 	uint256 public totalSupply;
 	uint256 public cost = 0.0030 ether;
 	uint256 public maxMintAmount = 10;
 
 	bool public collectionHidden = true;
-	bool public vipMintIsActive = false;
+	bool public freeMintIsActive = false;
 	bool public saleIsActive = false;
 
-	address public stakeholderAddress;
-
 	// ---------------------------------------------------------------------------------- CONSTRUCTOOOR
-	constructor(address _stakeholderAddress) ERC721('larva mfers', 'LARMF') {
-		stakeholderAddress = _stakeholderAddress;
-		_batchMint(_stakeholderAddress, 15);
+	constructor() ERC721('larva mfers', 'LARMF') {
+		stakeholderAddress = msg.sender;
+		_batchMint(msg.sender, 15);
 	}
 
 	// ---------------------------------------------------------------------------------- MODiFiERs
@@ -86,7 +85,7 @@ contract LarvaMfers is ERC721, Ownable {
 		totalSupply += _tokenAmount;
 	}
 
-	// ~* public sale mint *~
+	// ~* sale mint *~
 	function mint(uint256 _amountOfTokens)
 		public
 		payable
@@ -102,11 +101,11 @@ contract LarvaMfers is ERC721, Ownable {
 	}
 
 	// ~* free mint *~
-	function vipMint(uint256 _amountOfTokens)
+	function freeMint(uint256 _amountOfTokens)
 		public
-		validMintInput(_amountOfTokens, MAX_VIP_SUPPLY)
+		validMintInput(_amountOfTokens, MAX_FREE_SUPPLY)
 	{
-		require(vipMintIsActive, 'VIP mint closed');
+		require(freeMintIsActive, 'FREE mint closed');
 		require(
 			_amountOfTokens <= maxMintAmount,
 			'Transaction would exceed max mint amount'
@@ -114,10 +113,10 @@ contract LarvaMfers is ERC721, Ownable {
 		_batchMint(msg.sender, _amountOfTokens);
 	}
 
-	// ~* admin-only mint that can run regardless of minting or sale state *~
+	// ~* admin mint *~
 	function ownerMint(address _recipient, uint256 _amountOfTokens)
 		public
-		validMintInput(_amountOfTokens, MAX_VIP_SUPPLY)
+		validMintInput(_amountOfTokens, MAX_FREE_SUPPLY)
 		onlyOwner
 	{
 		_batchMint(_recipient, _amountOfTokens);
@@ -136,8 +135,8 @@ contract LarvaMfers is ERC721, Ownable {
 		baseURI = _newBaseURI;
 	}
 
-	function setVIPMintIsActive(bool _state) public onlyOwner {
-		vipMintIsActive = _state;
+	function setFreeMintIsActive(bool _state) public onlyOwner {
+		freeMintIsActive = _state;
 	}
 
 	function setSaleIsActive(bool _state) public onlyOwner {
