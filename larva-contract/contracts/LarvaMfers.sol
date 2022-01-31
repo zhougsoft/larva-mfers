@@ -15,26 +15,26 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	using Strings for uint256;
 
-	address public stakeholderAddress;
-
-	string private baseURI;
-	string public hiddenURI;
-	string public metadataFileExtension = ".json";
-	string public provenance;
+	address public withdrawAddress;
 
 	uint256 public constant MAX_SUPPLY = 10000;
 	uint256 public constant MAX_FREE_SUPPLY = 2500;
 	uint256 public totalSupply;
-	uint256 public cost = 0.0030 ether;
-	uint256 public maxMintAmount = 10;
+	uint256 public cost = 0.0040 ether;
+	uint256 public maxMintPerTx = 10;
 
-	bool public collectionHidden = true;
+	string internal uriPrefix;
+	string public uriSuffix = ".json";
+	string public hiddenURI = "HIDDEN";
+	string public provenance;
+
+	bool public collectionIsHidden = true;
 	bool public freeMintIsActive = false;
-	bool public saleIsActive = false;
+	bool public paidMintIsActive = false;
 
 	// ---------------------------------------------------------------------------------- CONSTRUCTOOOR
 	constructor() ERC721("larva mfers", "LARMF") {
-		stakeholderAddress = msg.sender;
+		withdrawAddress = msg.sender;
 		_batchMint(msg.sender, 15);
 	}
 
@@ -49,10 +49,6 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	}
 
 	// ---------------------------------------------------------------------------------- ViEWs
-	function _baseURI() internal view virtual override returns (string memory) {
-		return baseURI;
-	}
-
 	function tokenURI(uint256 tokenId)
 		public
 		view
@@ -60,44 +56,34 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		override
 		returns (string memory)
 	{
-		if (collectionHidden) {
+		if (collectionIsHidden) {
 			return hiddenURI;
 		}
 
 		require(_exists(tokenId), "Token does not exist");
-		string memory currentBaseURI = _baseURI();
-		return
-			bytes(currentBaseURI).length > 0
-				? string(
-					abi.encodePacked(
-						currentBaseURI,
-						tokenId.toString(),
-						metadataFileExtension
-					)
-				)
-				: "";
+		require(bytes(uriPrefix).length > 0, "uriPrefix not set");
+
+		return string(abi.encodePacked(uriPrefix, tokenId.toString(), uriSuffix));
 	}
 
-	function getTokensByAddress(address _address)
+	function getTokensOwnedByAddress(address _address)
 		public
 		view
 		returns (uint256[] memory ownedTokenIds)
 	{
 		uint256 addressBalance = balanceOf(_address);
-		uint256 currentTokenId = 1;
-		uint256 ownedTokenIndex = 0;
+		uint256 tokenIdCounter = 1;
+		uint256 ownedTokenCounter = 0;
 		ownedTokenIds = new uint256[](addressBalance);
 
-		while (ownedTokenIndex < addressBalance && currentTokenId <= MAX_SUPPLY) {
-			address tokenOwnerAddress = ownerOf(currentTokenId);
+		while (ownedTokenCounter < addressBalance && tokenIdCounter <= MAX_SUPPLY) {
+			address tokenOwnerAddress = ownerOf(tokenIdCounter);
 			if (tokenOwnerAddress == _address) {
-				ownedTokenIds[ownedTokenIndex] = currentTokenId;
-				ownedTokenIndex++;
+				ownedTokenIds[ownedTokenCounter] = tokenIdCounter;
+				ownedTokenCounter++;
 			}
-			currentTokenId++;
+			tokenIdCounter++;
 		}
-
-		return ownedTokenIds;
 	}
 
 	// ---------------------------------------------------------------------------------- MiNTiNG
@@ -115,21 +101,21 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	{
 		require(freeMintIsActive, "Free mint closed");
 		require(
-			_amountOfTokens <= maxMintAmount,
+			_amountOfTokens <= maxMintPerTx,
 			"Transaction would exceed max mint amount"
 		);
 		_batchMint(msg.sender, _amountOfTokens);
 	}
 
-	// ~* payable mint *~
+	// ~* paid mint *~
 	function mint(uint256 _amountOfTokens)
 		public
 		payable
 		validMintInput(_amountOfTokens, MAX_SUPPLY)
 	{
-		require(saleIsActive, "Token sale closed");
+		require(paidMintIsActive, "Token sale closed");
 		require(
-			_amountOfTokens <= maxMintAmount,
+			_amountOfTokens <= maxMintPerTx,
 			"Transaction would exceed max mint amount"
 		);
 		require(msg.value >= cost * _amountOfTokens, "Insufficient ETH sent");
@@ -146,56 +132,50 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	}
 
 	// ---------------------------------------------------------------------------------- ADMiN FUNCTiONs
-	function setProvenance(string memory _provenance) public onlyOwner {
-		provenance = _provenance;
+	function withdraw() public payable onlyOwner {
+		(bool os, ) = payable(withdrawAddress).call{value: address(this).balance}(
+			""
+		);
+		require(os);
+	}
+
+	function setWithdrawAddress(address _withdrawAddress) public onlyOwner {
+		withdrawAddress = _withdrawAddress;
+	}
+
+	function setURIPrefix(string memory _uriPrefix) public onlyOwner {
+		uriPrefix = _uriPrefix;
+	}
+
+	function setURISuffix(string memory _uriSuffix) public onlyOwner {
+		uriSuffix = _uriSuffix;
 	}
 
 	function setHiddenURI(string memory _hiddenURI) public onlyOwner {
 		hiddenURI = _hiddenURI;
 	}
 
-	function setBaseURI(string memory _newBaseURI) public onlyOwner {
-		baseURI = _newBaseURI;
-	}
-
-	function setFreeMintIsActive(bool _state) public onlyOwner {
-		freeMintIsActive = _state;
-	}
-
-	function setSaleIsActive(bool _state) public onlyOwner {
-		saleIsActive = _state;
-	}
-
-	function revealCollection() public onlyOwner {
-		collectionHidden = false;
+	function setProvenance(string memory _provenance) public onlyOwner {
+		provenance = _provenance;
 	}
 
 	function setCost(uint256 _newCost) public onlyOwner {
 		cost = _newCost;
 	}
 
-	function setMaxMintAmount(uint256 _newMaxMintAmount) public onlyOwner {
-		maxMintAmount = _newMaxMintAmount;
+	function setMaxMintPerTx(uint256 _maxMintPerTx) public onlyOwner {
+		maxMintPerTx = _maxMintPerTx;
 	}
 
-	function setMetadataFileExtension(string memory _newMetadataFileExtension)
-		public
-		onlyOwner
-	{
-		metadataFileExtension = _newMetadataFileExtension;
+	function setCollectionIsHidden(bool _state) public onlyOwner {
+		collectionIsHidden = _state;
 	}
 
-	function setStakeholderAddress(address _newStakeholderAddress)
-		public
-		onlyOwner
-	{
-		stakeholderAddress = _newStakeholderAddress;
+	function setFreeMintIsActive(bool _state) public onlyOwner {
+		freeMintIsActive = _state;
 	}
 
-	function withdraw() public payable onlyOwner {
-		(bool os, ) = payable(stakeholderAddress).call{
-			value: address(this).balance
-		}("");
-		require(os);
+	function setPaidMintIsActive(bool _state) public onlyOwner {
+		paidMintIsActive = _state;
 	}
 }
