@@ -6,6 +6,7 @@
     "test": "npx hardhat test",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile",
+    "run": "npx hardhat run scripts/run.js --network localhost",
     "deploy": "npx hardhat run scripts/deploy.js --network localhost",
     "deploy:rinkeby": "npx hardhat run scripts/deploy.js --network rinkeby"
   },

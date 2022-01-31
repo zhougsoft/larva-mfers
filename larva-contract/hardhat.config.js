@@ -15,7 +15,7 @@ module.exports = {
 		version: '0.8.9',
 		settings: {
 			optimizer: {
-				enabled: true,
+				enabled: false, // TODO: flip to true for production deployments
 				runs: 1000,
 			},
 		},
@@ -28,14 +28,18 @@ module.exports = {
 		hardhat: {
 			chainId: 1337,
 		},
-		rinkeby: {
-			url: process.env.INFURA_RINKEBY_URL,
-			accounts: [`0x${process.env.PRIVATE_KEY}`],
-		},
-		mumbai: {
-			url: 'https://rpc-mumbai.maticvigil.com',
-			accounts: [`0x${process.env.PRIVATE_KEY}`],
-		},
+
+		// ~*~ uncomment yr required networks ~*~
+
+		// rinkeby: {
+		// 	url: process.env.INFURA_RINKEBY_URL,
+		// 	accounts: [`0x${process.env.PRIVATE_KEY}`],
+		// },
+
+		// mumbai: {
+		// 	url: 'https://rpc-mumbai.maticvigil.com',
+		// 	accounts: [`0x${process.env.PRIVATE_KEY}`],
+		// },
 	},
 	etherscan: {
 		apiKey: { rinkeby: process.env.ETHERSCAN_API_KEY },

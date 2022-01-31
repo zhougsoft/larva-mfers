@@ -1,17 +1,16 @@
 // TO RUN
 // npx hardhat run scripts/deploy-larva.js
 
-const hre = require('hardhat');
+const hre = require("hardhat");
 
-const { STAKEHOLDER_ADDRESS } = process.env;
 
 async function main() {
-	const larvaFactory = await hre.ethers.getContractFactory('LarvaMfers');
-	const larvaContract = await larvaFactory.deploy(STAKEHOLDER_ADDRESS);
+	const larvaFactory = await hre.ethers.getContractFactory("LarvaMfers");
+	const larvaContract = await larvaFactory.deploy();
 
 	await larvaContract.deployed();
 
-	console.log('larva mfers deployed to:', larvaContract.address);
+	console.log("larva mfers deployed to:", larvaContract.address);
 }
 
 main()
