@@ -12,12 +12,11 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
+contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	using Strings for uint256;
 
 	// ---------------------------------------------------------------------------------- STATE
-	address public constant MFERS_ADDRESS =
-		0xF94516Ec531a1a9B34de514342aE3Bc78B940aed;
+	address public MFERS_ADDRESS;
 	address public withdrawAddress;
 
 	uint256 public constant MAX_SUPPLY = 10000;
@@ -40,8 +39,9 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	IERC721 internal mfersContract = IERC721(MFERS_ADDRESS);
 
 	// ---------------------------------------------------------------------------------- the CONSTRUCTOOOR
-	constructor() ERC721("larva mfers", "LARMF") {
+	constructor(address _mfersAddress) ERC721("larva mfers", "LARMF") {
 		withdrawAddress = msg.sender;
+		MFERS_ADDRESS = _mfersAddress;
 		_batchMint(msg.sender, 15);
 	}
 

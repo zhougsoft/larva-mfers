@@ -3,13 +3,10 @@
 
 const hre = require("hardhat");
 
-
 async function main() {
 	const larvaFactory = await hre.ethers.getContractFactory("LarvaMfers");
 	const larvaContract = await larvaFactory.deploy();
-
 	await larvaContract.deployed();
-
 	console.log("larva mfers deployed to:", larvaContract.address);
 }
 

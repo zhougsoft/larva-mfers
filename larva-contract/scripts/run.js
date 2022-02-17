@@ -1,67 +1,38 @@
-// run this script with 'npm run run'
-// 										...lol
+// TO RUN
+// npm run run
 
-const fs = require("fs");
 const hre = require("hardhat");
 
-const TEST_ADDRESS = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
-
-const deployLarvaMfers = async () => {
-	console.log("deploying contract...");
-	const larvaFactory = await hre.ethers.getContractFactory("LarvaMfers");
-	const larvaMfersContract = await larvaFactory.deploy();
-	await larvaMfersContract.deployed();
-	console.log(
-		"deployed! contract address: ",
-		larvaMfersContract.address,
-		"\nfrom: ",
-		larvaMfersContract.deployTransaction.from
-	);
-
-	return larvaMfersContract;
-};
-
 async function main() {
-	const larvaMfersContract = await deployLarvaMfers();
+	if (hre.network.name !== "hardhat") {
+		console.warn("\nhardhat network not targeted!\nexiting process...\n\n");
+		return;
+	}
 
-	console.log(
-		!!larvaMfersContract
-			? "contract interface is available!"
-			: "contract interface unavailable :("
+	// get deployer address
+	const [deployer] = await ethers.getSigners();
+	const deployerAddress = await deployer.getAddress();
+
+	// deploy mfers
+	console.log("deploying mfers...");
+	const mfersFactory = await hre.ethers.getContractFactory("mfers");
+	const mfersContract = await mfersFactory.deploy(deployerAddress);
+	await mfersContract.deployed();
+	console.log("mfers deployed: ", mfersContract.address);
+
+	// deploy larva mfers
+	console.log("\ndeploying larva mfers...");
+	const larvaFactory = await hre.ethers.getContractFactory(
+		"TESTNET_LarvaMfers"
 	);
+	const larvaContract = await larvaFactory.deploy(mfersContract.address);
+	await larvaContract.deployed();
+	console.log("larva mfers deployed: ", larvaContract.address);
 
-	const ownerAddress = larvaMfersContract.deployTransaction.from;
-
-	// SET HIDDEN URI
-	console.log("setting hidden URI");
-	await larvaMfersContract.setHiddenURI("ipfs://hidden/");
-	console.log("hidden URI set!");
-
-	// SET URI PREFIX
-	console.log("setting URI prefix");
-	await larvaMfersContract.setURIPrefix("ipfs://production/");
-	console.log("URI prefix set!");
-
-
-	// TOKEN URI OUTPUT - SHOULD BE HIDDEN URI
-	console.log("fetching a hidden tokenURI...");
-	const hiddenData = await larvaMfersContract.tokenURI(1);
-	console.log("tokenURI", hiddenData);
-	
-	// REVEAL COLLECTION
-	console.log("revealing collection...");
-	await larvaMfersContract.setCollectionIsHidden(false);
-	console.log("collection revealed!");
-
-	// TOKEN URI OUTPUT - SHOULD BE PRODUCTION URI
-	console.log("fetching a revealed tokenURI...");
-	const prodData = await larvaMfersContract.tokenURI(1);
-	console.log("tokenURI", prodData);
-
-	// AIRDROP MINT TO TEST ADDRESS
-	// console.log('airdrop minting to test address...');
-	// await larvaMfersContract.ownerMint(TEST_ADDRESS, 15);
-	// console.log('mint complete!');
+	// test the result!
+	const mfersAddyFromLarvas = await larvaContract.MFERS_ADDRESS();
+	const MFERS_ADDRESSES_MATCH = mfersAddyFromLarvas === mfersContract.address;
+	console.log("\ndoes the addresses match?\n", MFERS_ADDRESSES_MATCH, "\n");
 }
 
 main()
