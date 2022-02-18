@@ -49,7 +49,7 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	modifier validateMintInput(uint256 _amountOfTokens, uint256 _maxSupply) {
 		require(_amountOfTokens > 0, "Must mint at least one token");
 		require(
-			totalSupply + _amountOfTokens <= _maxSupply,
+			totalSupply + _amountOfTokens < _maxSupply + 1,
 			"Supply limit reached"
 		);
 		_;
@@ -57,7 +57,7 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	modifier capMaxMint(uint256 _amountOfTokens) {
 		require(
-			_amountOfTokens <= maxMintPerTx,
+			_amountOfTokens < maxMintPerTx + 1,
 			"Transaction would exceed max mint amount"
 		);
 		_;
@@ -90,7 +90,9 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		uint256 ownedTokenCounter = 0;
 		ownedTokenIds = new uint256[](addressBalance);
 
-		while (ownedTokenCounter < addressBalance && tokenIdCounter <= MAX_SUPPLY) {
+		while (
+			ownedTokenCounter < addressBalance && tokenIdCounter < MAX_SUPPLY + 1
+		) {
 			address tokenOwnerAddress = ownerOf(tokenIdCounter);
 			if (tokenOwnerAddress == _address) {
 				ownedTokenIds[ownedTokenCounter] = tokenIdCounter;
@@ -102,7 +104,7 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	// ---------------------------------------------------------------------------------- MiNTz
 	function _batchMint(address _recipient, uint256 _tokenAmount) internal {
-		for (uint256 i = 1; i <= _tokenAmount; i++) {
+		for (uint256 i = 1; i < _tokenAmount + 1; i++) {
 			_safeMint(_recipient, totalSupply + i);
 		}
 		totalSupply += _tokenAmount;
