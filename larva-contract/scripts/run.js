@@ -23,11 +23,11 @@ async function main() {
 	await mfersContract.setSaleState(true);
 	const mferPrice = hre.ethers.utils.parseEther("0.069");
 	await mfersContract.connect(signerOne).mint(1, { value: mferPrice });
-	const result = await mfersContract.totalSupply();
+	const mferMintResult = await mfersContract.totalSupply();
 	console.log(
 		`mfer minted for address ${
 			signerOne.address
-		}!\ntotal mfer supply: ${result.toString()}`
+		}!\ntotal mfer supply: ${mferMintResult.toString()}`
 	);
 
 	// deploy larva mfers
@@ -48,6 +48,10 @@ async function main() {
 	// --- script & test each deploy & mint step
 
 	// check if the 1/1s were minted (max supply == 15 ?)
+	const larveTotalSupplyResult = await larvaContract.totalSupply();
+	console.log(
+		`\ntotal larva mfer supply: ${larveTotalSupplyResult.toString()}\n`
+	);
 
 	// set hiddenURI
 
