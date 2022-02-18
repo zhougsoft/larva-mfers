@@ -1,6 +1,5 @@
 // TO RUN
 // npm run run
-
 const hre = require("hardhat");
 
 async function main() {
@@ -9,19 +8,27 @@ async function main() {
 		return;
 	}
 
-	// get deployer address
-	const [deployer, testAddr1, testAddr2] = await ethers.getSigners();
-	const deployerAddress = await deployer.getAddress();
+	// get test addresses
+	const [owner, signerOne, signerTwo] = await hre.ethers.getSigners();
 
 	// deploy mfers
 	console.log("deploying mfers...");
 	const mfersFactory = await hre.ethers.getContractFactory("mfers");
-	const mfersContract = await mfersFactory.deploy(deployerAddress);
+	const mfersContract = await mfersFactory.deploy(owner.address);
 	await mfersContract.deployed();
 	console.log("mfers deployed: ", mfersContract.address);
 
-	// TODO:
-	// testAddr1 mints an OG mfer, testAddr2 does not
+	// signerOne mints an OG mfer, signerTwo does not
+	console.log("\nminting mfer...");
+	await mfersContract.setSaleState(true);
+	const mferPrice = hre.ethers.utils.parseEther("0.069");
+	await mfersContract.connect(signerOne).mint(1, { value: mferPrice });
+	const result = await mfersContract.totalSupply();
+	console.log(
+		`mfer minted for address ${
+			signerOne.address
+		}!\ntotal mfer supply: ${result.toString()}`
+	);
 
 	// deploy larva mfers
 	console.log("\ndeploying larva mfers...");
@@ -37,13 +44,8 @@ async function main() {
 	const MFERS_ADDRESSES_MATCH = mfersAddyFromLarvas === mfersContract.address;
 	console.log("\ndoes the addresses match?\n", MFERS_ADDRESSES_MATCH, "\n");
 
-
-
-
-
 	// TODO:
 	// --- script & test each deploy & mint step
-	
 
 	// check if the 1/1s were minted (max supply == 15 ?)
 
@@ -58,14 +60,6 @@ async function main() {
 	// flip to paid mint
 
 	// mint with testAddr2 with payable amount (should be successful)
-
-
-
-
-	// then take the above script and...
-
-	// LEANR TESTING GOOD:
-	// https://youtu.be/0r7mgJTeoD0?t=466
 }
 
 main()
