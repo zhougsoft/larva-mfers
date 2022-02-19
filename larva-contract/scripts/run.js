@@ -47,15 +47,26 @@ async function main() {
 	// set hiddenURI
 	const newHiddenURI = "ipfs://new_hidden_uri";
 	await larvaContract.setHiddenURI(newHiddenURI);
-
-	// DID HIDDEN URI GET UPDATED?
+	// TEST: DID HIDDEN URI GET UPDATED?
 	const resultNewHiddenURI = await larvaContract.hiddenURI();
 	const HIDDEN_URI_UPDATED = newHiddenURI === resultNewHiddenURI;
 	console.log("\ndid hidden uri get updated?\n", HIDDEN_URI_UPDATED, "\n");
 
 	// set free mint to active
+	await larvaContract.setFreeMintIsActive(true);
+	// TEST: WAS FREE MINT ACTIVATED?
+	const resultFreeMintIsActive = await larvaContract.freeMintIsActive();
+	console.log("\nwas free mint activated?\n", resultFreeMintIsActive, "\n");
 
-	// run free mint with testAddr1 (should be successful)
+	// run free mint with signerOne (should be successful since they hold a mfer)
+	await larvaContract.connect(signerOne).freeMint(1);
+	// TEST: WAS FREE MFER MINT SUCCESSFUL?
+	const resultMferMint = await larvaContract.balanceOf(signerOne.address);
+	const MFER_MINT_WAS_SUCCESS = resultMferMint.eq(1);
+	console.log("\nwas free mint successful?\n", MFER_MINT_WAS_SUCCESS, "\n");
+
+
+	
 
 	// run free mint with testAddr2 (should be unsuccessful)
 

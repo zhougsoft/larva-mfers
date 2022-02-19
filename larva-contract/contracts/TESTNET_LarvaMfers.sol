@@ -39,12 +39,13 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	bool public freeMintIsActive = false;
 	bool public paidMintIsActive = false;
 
-	IERC721 internal mfersContract = IERC721(MFERS_ADDRESS);
+	IERC721 internal mfersContract;
 
 	// ---------------------------------------------------------------------------------- the CONSTRUCTOOOR
 	constructor(address _mfersAddress) ERC721("larva mfers", "LARMF") {
 		withdrawAddress = msg.sender;
 		MFERS_ADDRESS = _mfersAddress;
+		mfersContract = IERC721(_mfersAddress);
 	}
 
 	// ---------------------------------------------------------------------------------- MODiFiERs
