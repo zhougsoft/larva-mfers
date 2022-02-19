@@ -27,7 +27,7 @@ async function main() {
 	console.log(
 		`mfer minted for address ${
 			signerOne.address
-		}!\ntotal mfer supply: ${mferMintResult.toString()}`
+		}\ntotal mfer supply: ${mferMintResult.toString()}`
 	);
 
 	// deploy larva mfers
@@ -39,21 +39,19 @@ async function main() {
 	await larvaContract.deployed();
 	console.log("larva mfers deployed: ", larvaContract.address);
 
-	// WAS MFERS ADDRESS PROPERLY SET?
+	// TEST: WAS MFERS ADDRESS PROPERLY SET?
 	const mfersAddyFromLarvas = await larvaContract.MFERS_ADDRESS();
 	const MFERS_ADDRESSES_MATCH = mfersAddyFromLarvas === mfersContract.address;
-	console.log("\ndoes the addresses match?\n", MFERS_ADDRESSES_MATCH, "\n");
-
-	// TODO:
-	// --- script & test each deploy & mint step
-
-	// check if the 1/1s were minted (max supply == 15 ?)
-	const larveTotalSupplyResult = await larvaContract.totalSupply();
-	console.log(
-		`\ntotal larva mfer supply: ${larveTotalSupplyResult.toString()}\n`
-	);
+	console.log("\ndo the mfer addresses match?\n", MFERS_ADDRESSES_MATCH, "\n");
 
 	// set hiddenURI
+	const newHiddenURI = "ipfs://new_hidden_uri";
+	await larvaContract.setHiddenURI(newHiddenURI);
+
+	// DID HIDDEN URI GET UPDATED?
+	const resultNewHiddenURI = await larvaContract.hiddenURI();
+	const HIDDEN_URI_UPDATED = newHiddenURI === resultNewHiddenURI;
+	console.log("\ndid hidden uri get updated?\n", HIDDEN_URI_UPDATED, "\n");
 
 	// set free mint to active
 
@@ -64,6 +62,11 @@ async function main() {
 	// flip to paid mint
 
 	// mint with testAddr2 with payable amount (should be successful)
+
+	// TODO: test final overall supply (count it up and check assertion)
+	// const resultLarvaSupply = await larvaContract.totalSupply();
+	// const CORRECT_FINAL_TOTAL_SUPPLY = resultLarvaSupply.eq(???);
+	// console.log("\ndid specials get minted?\n", CORRECT_FINAL_TOTAL_SUPPLY, "\n");
 }
 
 main()

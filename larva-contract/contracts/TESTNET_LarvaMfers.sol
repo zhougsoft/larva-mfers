@@ -20,10 +20,13 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	address public withdrawAddress;
 
 	uint256 public constant MAX_SUPPLY = 10000;
-	uint256 public constant MAX_FREE_SUPPLY = 2500;
+	uint256 public constant MFER_MINT_SUPPLY_THRESHOLD = 2500; // 1125 for a North American timezone, 1125 for an Asian timezone
+	uint256 public constant FREE_MINT_SUPPLY_THRESHOLD = 5000; // 2500 free for public mint
+
+	uint256 public maxFreeMintPerTx = 5;
+	uint256 public maxMintPerTx = 20;
 	uint256 public totalSupply;
 	uint256 public cost = 0.0069 ether;
-	uint256 public maxMintPerTx = 20;
 
 	string public constant PROVENANCE =
 		"293ffdd76ae6ea0e82867a541e51fa02d981804284940779a0a6d22f07fb04a6";
@@ -42,7 +45,6 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	constructor(address _mfersAddress) ERC721("larva mfers", "LARMF") {
 		withdrawAddress = msg.sender;
 		MFERS_ADDRESS = _mfersAddress;
-		_batchMint(msg.sender, 15);
 	}
 
 	// ---------------------------------------------------------------------------------- MODiFiERs
@@ -55,9 +57,9 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		_;
 	}
 
-	modifier capMaxMint(uint256 _amountOfTokens) {
+	modifier capMaxMint(uint256 _amountOfTokens, uint256 _maxMint) {
 		require(
-			_amountOfTokens < maxMintPerTx + 1,
+			_amountOfTokens < _maxMint + 1,
 			"Transaction would exceed max mint amount"
 		);
 		_;
@@ -102,7 +104,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		}
 	}
 
-	// ---------------------------------------------------------------------------------- MiNTz
+	// ---------------------------------------------------------------------------------- MiNTs
 	function _batchMint(address _recipient, uint256 _tokenAmount) internal {
 		for (uint256 i = 1; i < _tokenAmount + 1; i++) {
 			_safeMint(_recipient, totalSupply + i);
@@ -113,14 +115,18 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	// ~* free mint *~
 	function freeMint(uint256 _amountOfTokens)
 		public
-		validateMintInput(_amountOfTokens, MAX_FREE_SUPPLY)
-		capMaxMint(_amountOfTokens)
+		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_THRESHOLD)
+		capMaxMint(_amountOfTokens, maxFreeMintPerTx)
 	{
 		require(freeMintIsActive, "Free mint closed");
-		require(
-			mfersContract.balanceOf(msg.sender) > 0,
-			"Free mint is for mfer holders only"
-		);
+
+		// If token supply is less than the token-gated mint threshold, validate sender's token balance
+		if (totalSupply < MFER_MINT_SUPPLY_THRESHOLD + 1) {
+			require(
+				mfersContract.balanceOf(msg.sender) > 0,
+				"Free mint is currently for mfer holders only"
+			);
+		}
 		_batchMint(msg.sender, _amountOfTokens);
 	}
 
@@ -129,7 +135,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		public
 		payable
 		validateMintInput(_amountOfTokens, MAX_SUPPLY)
-		capMaxMint(_amountOfTokens)
+		capMaxMint(_amountOfTokens, maxMintPerTx)
 	{
 		require(paidMintIsActive, "Token sale closed");
 		require(
@@ -142,7 +148,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	// ~* owner mint *~
 	function ownerMint(address _recipient, uint256 _amountOfTokens)
 		public
-		validateMintInput(_amountOfTokens, MAX_FREE_SUPPLY)
+		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_THRESHOLD)
 		onlyOwner
 	{
 		_batchMint(_recipient, _amountOfTokens);
@@ -180,6 +186,10 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		cost = _newCost;
 	}
 
+	function setMaxFreeMintPerTx(uint256 _maxFreeMintPerTx) public onlyOwner {
+		maxFreeMintPerTx = _maxFreeMintPerTx;
+	}
+
 	function setMaxMintPerTx(uint256 _maxMintPerTx) public onlyOwner {
 		maxMintPerTx = _maxMintPerTx;
 	}
@@ -192,10 +202,12 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		paidMintIsActive = _state;
 	}
 
+	// Sets the collection URI and reveals the collection
+	// These operations are coupled to prevent setting and leaking the metadata while the collection is still hidden
 	function revealCollection(string memory _uriPrefix) public onlyOwner {
 		require(
 			!freeMintIsActive || !paidMintIsActive,
-			"Cannot reveal collection while any type of minting is active"
+			"Cannot reveal collection while any minting is active"
 		);
 		collectionIsHidden = false;
 		setURIPrefix(_uriPrefix);

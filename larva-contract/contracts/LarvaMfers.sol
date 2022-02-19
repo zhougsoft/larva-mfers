@@ -42,7 +42,6 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	// ---------------------------------------------------------------------------------- the CONSTRUCTOOOR
 	constructor() ERC721("larva mfers", "LARMF") {
 		withdrawAddress = msg.sender;
-		_batchMint(msg.sender, 15);
 	}
 
 	// ---------------------------------------------------------------------------------- MODiFiERs
