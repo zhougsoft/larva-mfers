@@ -115,6 +115,7 @@ async function main() {
 		.connect(signerThree)
 		.freeMint(1)
 		.catch(error => {
+			// TODO: swap this for the expect-a-revert kinda thing
 			console.log("\nnon-token holder blocked from minting successfully!\n");
 		});
 
