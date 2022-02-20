@@ -1,12 +1,32 @@
+const { before } = require("mocha");
 const { expect } = require("chai");
 
 describe("LarvaMfers", () => {
-	let larvaMfers, owner, addr1, addr2, addr3;
+	let owner,
+		wallet1,
+		wallet2,
+		wallet3,
+		larvaMfers,
+		mfersContract,
+		larvaLadsContract;
 
-	beforeEach(async () => {
-		const larvaFactory = await hre.ethers.getContractFactory("LarvaMfers");
-		larvaMfers = await larvaFactory.deploy();
-		[owner, addr1, addr2, addr3] = await ethers.getSigners();
+	before(async () => {
+		[owner, wallet1, wallet2, wallet3] = await ethers.getSigners();
+
+		console.info("\ndeploying contracts...");
+		const larvaMfersFactory = await hre.ethers.getContractFactory(
+			"TESTNET_LarvaMfers"
+		);
+		const mfersFactory = await hre.ethers.getContractFactory("mfers");
+		const larvaLadsFactory = await hre.ethers.getContractFactory("LarvaLads");
+
+		mfersContract = await mfersFactory.deploy(owner.address);
+		larvaLadsContract = await larvaLadsFactory.deploy();
+		larvaMfers = await larvaMfersFactory.deploy(
+			mfersContract.address,
+			larvaLadsContract.address
+		);
+		console.info("contracts deployed!\n");
 	});
 
 	it("Should deploy with correct owner address", async () => {
