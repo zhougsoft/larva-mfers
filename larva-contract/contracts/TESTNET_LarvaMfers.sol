@@ -17,11 +17,12 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	// ---------------------------------------------------------------------------------- STATE
 	address public MFERS_ADDRESS;
+	address public LARVA_ADDRESS;
 	address public withdrawAddress;
 
+	uint256 public constant HOLDER_MINT_SUPPLY_THRESHOLD = 2500; // 1125 for an Asian timezone, 1125 for an American timezone
+	uint256 public constant FREE_MINT_SUPPLY_THRESHOLD = 5000; // 2500 reserved free for public mint
 	uint256 public constant MAX_SUPPLY = 10000;
-	uint256 public constant MFER_MINT_SUPPLY_THRESHOLD = 2500; // 1125 for a North American timezone, 1125 for an Asian timezone
-	uint256 public constant FREE_MINT_SUPPLY_THRESHOLD = 5000; // 2500 free for public mint
 
 	uint256 public maxFreeMintPerTx = 5;
 	uint256 public maxMintPerTx = 20;
@@ -40,12 +41,15 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	bool public paidMintIsActive = false;
 
 	IERC721 internal mfersContract;
+	IERC721 internal larvaContract;
 
 	// ---------------------------------------------------------------------------------- the CONSTRUCTOOOR
-	constructor(address _mfersAddress) ERC721("larva mfers", "LARMF") {
+	constructor(address _mfersAddress, address _larvaAddress) ERC721("larva mfers", "LARMF") {
 		withdrawAddress = msg.sender;
 		MFERS_ADDRESS = _mfersAddress;
+		LARVA_ADDRESS = _larvaAddress;
 		mfersContract = IERC721(_mfersAddress);
+		larvaContract = IERC721(_larvaAddress);
 	}
 
 	// ---------------------------------------------------------------------------------- MODiFiERs
@@ -122,10 +126,11 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		require(freeMintIsActive, "Free mint closed");
 
 		// If token supply is less than the token-gated mint threshold, validate sender's token balance
-		if (totalSupply < MFER_MINT_SUPPLY_THRESHOLD + 1) {
+		if (totalSupply < HOLDER_MINT_SUPPLY_THRESHOLD + 1) {
 			require(
-				mfersContract.balanceOf(msg.sender) > 0,
-				"Free mint is currently for mfer holders only"
+				mfersContract.balanceOf(msg.sender) > 0 ||
+				larvaContract.balanceOf(msg.sender) > 0,
+				"Free mint is currently for mfer & larva lad holders only"
 			);
 		}
 		_batchMint(msg.sender, _amountOfTokens);
