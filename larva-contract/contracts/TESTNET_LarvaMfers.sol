@@ -214,10 +214,6 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	function revealCollection(string memory _uriPrefix) public onlyOwner {
 		require(collectionIsHidden, "Collection is already revealed");
 		require(
-			_uriPrefix != "",
-			"Must provide collection URI prefix when revealing collection"
-		);
-		require(
 			!freeMintIsActive || !paidMintIsActive,
 			"Cannot reveal collection while any minting is active"
 		);
