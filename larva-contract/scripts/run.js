@@ -1,5 +1,13 @@
 // TO RUN
 // npm run run
+
+
+// THE TEST SUITE WILL MAKE THE CODE IN THIS FILE REDUNANT! (MAYBE)
+
+// TODO: script out paid mint (if actually required)
+
+
+
 const hre = require("hardhat");
 
 async function main() {
@@ -120,18 +128,6 @@ async function main() {
 		});
 
 
-	// flip to paid mint
-
-	
-
-	// mint with testAddr3 with payable amount (should be successful)
-
-
-
-	// TODO: test final overall supply (count it up and check assertion)
-	// const resultLarvaSupply = await larvaMfersContract.totalSupply();
-	// const CORRECT_FINAL_TOTAL_SUPPLY = resultLarvaSupply.eq(???);
-	// console.log("\ndid specials get minted?\n", CORRECT_FINAL_TOTAL_SUPPLY, "\n");
 }
 
 main()
