@@ -20,9 +20,9 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	address public LARVA_ADDRESS;
 	address public withdrawAddress;
 
-	uint256 public constant HOLDER_MINT_SUPPLY_THRESHOLD = 2500; // 1125 for an Asian timezone, 1125 for an American timezone
+	uint256 public constant HOLDER_MINT_SUPPLY_THRESHOLD = 2500; // 2500 reserved for token-gated mint
 	uint256 public constant FREE_MINT_SUPPLY_THRESHOLD = 5000; // 2500 reserved free for public mint
-	uint256 public constant MAX_SUPPLY = 10000;
+	uint256 public constant MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint
 
 	uint256 public maxFreeMintPerTx = 5;
 	uint256 public maxMintPerTx = 20;
@@ -44,7 +44,9 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	IERC721 internal larvaContract;
 
 	// ---------------------------------------------------------------------------------- the CONSTRUCTOOOR
-	constructor(address _mfersAddress, address _larvaAddress) ERC721("larva mfers", "LARMF") {
+	constructor(address _mfersAddress, address _larvaAddress)
+		ERC721("larva mfers", "LARMF")
+	{
 		withdrawAddress = msg.sender;
 		MFERS_ADDRESS = _mfersAddress;
 		LARVA_ADDRESS = _larvaAddress;
@@ -129,7 +131,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		if (totalSupply < HOLDER_MINT_SUPPLY_THRESHOLD + 1) {
 			require(
 				mfersContract.balanceOf(msg.sender) > 0 ||
-				larvaContract.balanceOf(msg.sender) > 0,
+					larvaContract.balanceOf(msg.sender) > 0,
 				"Free mint is currently for mfer & larva lad holders only"
 			);
 		}
@@ -175,7 +177,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	function setURIPrefix(string memory _uriPrefix) public onlyOwner {
 		require(
 			!collectionIsHidden,
-			"Cannot set URI while collection is hidden - use 'reveal()' to initialize and expose the URI prefix"
+			"Cannot set URI while collection is hidden - use 'reveal()' to initialize and expose the URI prefix for the first time"
 		);
 		uriPrefix = _uriPrefix;
 	}
@@ -208,9 +210,13 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		paidMintIsActive = _state;
 	}
 
-	// Sets the collection URI and reveals the collection
-	// These operations are coupled to prevent setting and leaking the metadata while the collection is still hidden
+	// One-way function that reveals the collection and sets the content URI
 	function revealCollection(string memory _uriPrefix) public onlyOwner {
+		require(collectionIsHidden, "Collection is already revealed");
+		require(
+			_uriPrefix != "",
+			"Must provide collection URI prefix when revealing collection"
+		);
 		require(
 			!freeMintIsActive || !paidMintIsActive,
 			"Cannot reveal collection while any minting is active"
