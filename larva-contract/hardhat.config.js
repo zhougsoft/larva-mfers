@@ -51,7 +51,7 @@ if (PRIVATE_KEY_RINKEBY && RINKEBY_NODE_URL) {
 		...config,
 		networks: {
 			...config.networks,
-			mumbai: {
+			rinkeby: {
 				url: RINKEBY_NODE_URL,
 				accounts: [`0x${PRIVATE_KEY_RINKEBY}`],
 			},
@@ -64,7 +64,7 @@ if (PRIVATE_KEY_MAINNET && MAINNET_NODE_URL) {
 		...config,
 		networks: {
 			...config.networks,
-			matic: {
+			mainnet: {
 				url: MAINNET_NODE_URL,
 				accounts: [`0x${PRIVATE_KEY_MAINNET}`],
 			},
