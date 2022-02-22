@@ -122,21 +122,66 @@ describe("LarvaMfers", () => {
 	//-------- THE MINT -------------------------------------------------
 
 	// *** token-gated pre-mint ***
-	it("Should ", async () => {
-		//...
+	it("Should revert if free mint not active", async () => {
+		await expect(larvaMfers.freeMint(wallet1, 1)).to.be.reverted;
 	});
-	// Should not mint if free mint not active
-	// Should activate free mint
-	// Should mint free token for mfer holder - mint with wallet1
-	// Should mint free token for Larva Lad holder - mint with wallet2
-	// Should mint free token for mfer + Larva Lad holder - mint with wallet3
-	// Should not mint free token for non-holder
-	// Should batch mint max allowed tokens per-tx for free mint - mint with wallet3
-	// Should not batch mint more tokens than free mint max-per-tx
-	// Should not mint zero or negative number on free mint input
+
+	it("Should activate free mint", async () => {
+		await larvaMfers.setFreeMintIsActive(true);
+		expect(await larvaMfers.freeMintIsActive()).to.equal(true);
+	});
+
+	it("Should not mint free token for non-holder", async () => {
+		await expect(larvaMfers.freeMint(wallet4, 1)).to.be.reverted;
+	});
+
+
+
+
+
+
+
+
+
+
+	// ### TODO: make this test pass, the copy functionality for other free mints ###
+
+	it("Should mint free token for mfer holder", async () => {
+		// mfer holder = wallet1
+		expect(await larvaMfers.ownerMint(wallet1.address, 1))
+			.to.not.emit(larvaMfers, "Transfer")
+			.withArgs(ADDR_ZERO, wallet2.address, 12);
+		expect(await larvaMfers.balanceOf(wallet3.address)).to.equal(69);
+	});
+
+	it("Should mint free token for Larva Lads holder", async () => {
+		// larva lad holder = wallet2
+	});
+
+	it("Should mint free token for mfer + Larva Lads holder", async () => {
+		// mfer + larva lad holder = wallet3
+	});
+
+	it("Should batch free mint max allowed tokens per-tx", async () => {
+		// mint with wallet3
+	});
+
+	it("Should revert free mint on invalid input", async () => {
+		// Should not batch mint more tokens than free mint max-per-tx
+		// Should not mint zero or negative number on free mint input
+	});
+
+
+
+
+
+
+
+
+
 
 	// *** public free mint ***
-	it("Should ", async () => {
+	it("Should...", async () => {
 		//...
 	});
 	// Should mint free token for non-holder after pre-mint supply threshold - mint with wallet4
@@ -146,7 +191,7 @@ describe("LarvaMfers", () => {
 	// TODO: test "mint resuming" scenario - should mint
 
 	// *** sale mint ***
-	it("Should ", async () => {
+	it("Should...", async () => {
 		//...
 	});
 	// Should activate sale mint
@@ -163,7 +208,7 @@ describe("LarvaMfers", () => {
 	// TODO: test "mint resuming" scenario - should mint
 
 	//-------- WITHDRAWAL -------------------------------------------------
-	it("Should ", async () => {
+	it("Should...", async () => {
 		//...
 	});
 	// withdraw - should fail as non-withdraw address
@@ -171,7 +216,7 @@ describe("LarvaMfers", () => {
 	// withdraw - should now work as withdraw address (check balances!)
 
 	//-------- REVEAL -------------------------------------------------
-	it("Should ", async () => {
+	it("Should...", async () => {
 		//...
 	});
 	// WIP - no particular order...
@@ -181,14 +226,14 @@ describe("LarvaMfers", () => {
 	// prevent attempting to reveal again once it's already revealed
 
 	//-------- ADMIN FUNCTIONS -------------------------------------------------
-	it("Should ", async () => {
+	it("Should...", async () => {
 		//...
 	});
 	// setURIPrefix - should work
 	// setURISuffix - should work
 
 	// ### then, as non-owner (group these into "admin permissions work" or smth):
-	it("Should ", async () => {
+	it("Should...", async () => {
 		//...
 	});
 	// these should fail:
