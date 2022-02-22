@@ -1,3 +1,6 @@
+// chai/waffle matcher docs:
+// https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
+
 const { before } = require("mocha");
 const { expect } = require("chai");
 
@@ -87,29 +90,29 @@ describe("LarvaMfers", () => {
 		expect(await larvaMfers.PROVENANCE()).to.equal(PROVENANCE);
 	});
 
-
-	// TODO: make these tests pass
 	it("Should have default values set", async () => {
-		expect(await larvaMfers.totalSupply()).to.equal(1);
-		expect(await larvaMfers.maxFreeMintPerTx()).to.not.equal(5);
-		expect(await larvaMfers.maxMintPerTx()).to.not.equal(20);
-		expect(await larvaMfers.cost()).to.not.equal(0.0069);
-		expect(await larvaMfers.uriSuffix()).to.not.equal(".json");
+		expect(await larvaMfers.totalSupply()).to.equal(0);
+		expect(await larvaMfers.maxFreeMintPerTx()).to.not.equal(0);
+		expect(await larvaMfers.maxMintPerTx()).to.not.equal(0);
+		expect(await larvaMfers.cost()).to.not.equal(0);
+		expect(await larvaMfers.uriSuffix()).to.not.equal(null);
 	});
 
 	it("Should be deployed in the correct minting state", async () => {
-		// Should have collection hidden by default
-		// Should have inactive free mint by default
-		// Should have inactive sale mint by default
+		expect(await larvaMfers.collectionIsHidden()).to.equal(true);
+		expect(await larvaMfers.freeMintIsActive()).to.equal(false);
+		expect(await larvaMfers.paidMintIsActive()).to.equal(false);
 	});
 
-	it("Should ", async () => {
-		//...
+	it("Should handle URI admin", async () => {
+		await expect(larvaMfers.setURIPrefix("ipfs://fail/")).to.be.reverted;
+		await larvaMfers.setHiddenURI("ipfs://hidden/");
+		expect(await larvaMfers.hiddenURI()).to.equal("ipfs://hidden/");
 	});
 
-	// Should not allow token URI to be set
-	// Should set hidden URI
-	// Should mint 1/1 tokens to owner via owner mint - (15 initial tokens in collection to contract deployooor)
+	it("Mint 1/1 tokens to owner via owner mint", async () => {
+		// 15 initial tokens in collection to contract deployooor
+	});
 
 	//-------- THE MINT -------------------------------------------------
 
@@ -127,13 +130,9 @@ describe("LarvaMfers", () => {
 	// Should not batch mint more tokens than free mint max-per-tx
 	// Should not mint zero or negative number on free mint input
 
-
-
 	// TODO: HOW TO CHECK IF MINT WENT THROUGH
 	// .to.emit(larvaMfersContract, "Transfer")
 	// .withArgs(ethers.constants.AddressZero, address, tokenId);
-
-
 
 	// *** public free mint ***
 	it("Should ", async () => {
