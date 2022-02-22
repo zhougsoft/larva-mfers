@@ -11,6 +11,8 @@ const MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint
 const PROVENANCE =
 	"293ffdd76ae6ea0e82867a541e51fa02d981804284940779a0a6d22f07fb04a6";
 
+const ADDR_ZERO = ethers.constants.AddressZero;
+
 describe("LarvaMfers", () => {
 	let owner,
 		wallet1,
@@ -111,7 +113,10 @@ describe("LarvaMfers", () => {
 	});
 
 	it("Mint 1/1 tokens to owner via owner mint", async () => {
-		// 15 initial tokens in collection to contract deployooor
+		expect(await larvaMfers.ownerMint(owner.address, 15))
+			.to.emit(larvaMfers, "Transfer")
+			.withArgs(ADDR_ZERO, owner.address, 15);
+		expect(await larvaMfers.balanceOf(owner.address)).to.equal(15);
 	});
 
 	//-------- THE MINT -------------------------------------------------
@@ -129,10 +134,6 @@ describe("LarvaMfers", () => {
 	// Should batch mint max allowed tokens per-tx for free mint - mint with wallet3
 	// Should not batch mint more tokens than free mint max-per-tx
 	// Should not mint zero or negative number on free mint input
-
-	// TODO: HOW TO CHECK IF MINT WENT THROUGH
-	// .to.emit(larvaMfersContract, "Transfer")
-	// .withArgs(ethers.constants.AddressZero, address, tokenId);
 
 	// *** public free mint ***
 	it("Should ", async () => {
