@@ -1,3 +1,5 @@
 # 🐛 larva mfers 🐛
 
-repo for all larva mfers project related code
+repo for the larva mfers backend code + art gen!
+
+excuse the mess ;)
