@@ -117,6 +117,7 @@ describe("LarvaMfers", () => {
 			.to.emit(larvaMfers, "Transfer")
 			.withArgs(ADDR_ZERO, owner.address, 15);
 		expect(await larvaMfers.balanceOf(owner.address)).to.equal(15);
+		expect(await larvaMfers.totalSupply()).to.equal(15);
 	});
 
 	//-------- THE MINT -------------------------------------------------
@@ -135,50 +136,43 @@ describe("LarvaMfers", () => {
 		await expect(larvaMfers.freeMint(wallet4, 1)).to.be.reverted;
 	});
 
-
-
-
-
-
-
-
-
-
-	// ### TODO: make this test pass, the copy functionality for other free mints ###
+	const testFreeMint = async (wallet, amount) => {
+		await expect(await larvaMfers.connect(wallet).freeMint(amount))
+			.to.emit(larvaMfers, "Transfer")
+			.withArgs(ADDR_ZERO, wallet.address, await larvaMfers.totalSupply());
+	};
 
 	it("Should mint free token for mfer holder", async () => {
-		// mfer holder = wallet1
-		expect(await larvaMfers.ownerMint(wallet1.address, 1))
-			.to.not.emit(larvaMfers, "Transfer")
-			.withArgs(ADDR_ZERO, wallet2.address, 12);
-		expect(await larvaMfers.balanceOf(wallet3.address)).to.equal(69);
+		await testFreeMint(wallet1, 1);
 	});
 
 	it("Should mint free token for Larva Lads holder", async () => {
-		// larva lad holder = wallet2
+		await testFreeMint(wallet2, 1);
 	});
 
 	it("Should mint free token for mfer + Larva Lads holder", async () => {
-		// mfer + larva lad holder = wallet3
+		await testFreeMint(wallet3, 1);
 	});
 
-	it("Should batch free mint max allowed tokens per-tx", async () => {
-		// mint with wallet3
+	it("Should batch mint max free allowed tokens per-tx", async () => {
+		await testFreeMint(wallet3, await larvaMfers.maxFreeMintPerTx());
 	});
 
-	it("Should revert free mint on invalid input", async () => {
-		// Should not batch mint more tokens than free mint max-per-tx
-		// Should not mint zero or negative number on free mint input
+	it("Should revert free mint on invalid amount input", async () => {
+		await expect(
+			larvaMfers
+				.connect(wallet3)
+				.freeMint(wallet4, (await larvaMfers.maxFreeMintPerTx()) + 1)
+		).to.be.reverted;
+		await expect(larvaMfers.connect(wallet3).freeMint(wallet4, 0)).to.be
+			.reverted;
+		await expect(larvaMfers.connect(wallet3).freeMint(wallet4, -1)).to.be
+			.reverted;
 	});
 
 
 
-
-
-
-
-
-
+	// TODO:
 
 	// *** public free mint ***
 	it("Should...", async () => {
