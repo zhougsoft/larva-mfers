@@ -20,8 +20,8 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	address public LARVA_ADDRESS;
 	address public withdrawAddress;
 
-	uint256 public constant HOLDER_MINT_SUPPLY_THRESHOLD = 2500; // 2500 reserved for token-gated mint
-	uint256 public constant FREE_MINT_SUPPLY_THRESHOLD = 5000; // 2500 reserved free for public mint
+	uint256 public constant HOLDER_MINT_SUPPLY_LIMIT = 2500; // 2500 reserved for token-gated mint
+	uint256 public constant FREE_MINT_SUPPLY_LIMIT = 5000; // 2500 reserved free for public mint
 	uint256 public constant MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint
 
 	uint256 public maxFreeMintPerTx = 5;
@@ -122,13 +122,13 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	// ~* free mint *~
 	function freeMint(uint256 _amountOfTokens)
 		public
-		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_THRESHOLD)
+		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_LIMIT)
 		capMaxMint(_amountOfTokens, maxFreeMintPerTx)
 	{
 		require(freeMintIsActive, "Free mint closed");
 
-		// If token supply is less than the token-gated mint threshold, validate sender's token balance
-		if (totalSupply < HOLDER_MINT_SUPPLY_THRESHOLD + 1) {
+		// If token supply is less than the token-gated mint LIMIT, validate sender's token balance
+		if (totalSupply < HOLDER_MINT_SUPPLY_LIMIT + 1) {
 			require(
 				mfersContract.balanceOf(msg.sender) > 0 ||
 					larvaContract.balanceOf(msg.sender) > 0,
@@ -156,7 +156,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	// ~* owner mint *~
 	function ownerMint(address _recipient, uint256 _amountOfTokens)
 		public
-		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_THRESHOLD)
+		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_LIMIT)
 		onlyOwner
 	{
 		_batchMint(_recipient, _amountOfTokens);

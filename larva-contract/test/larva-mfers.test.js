@@ -5,8 +5,8 @@ const { before } = require("mocha");
 const { expect } = require("chai");
 
 const LARVA_MFERS_CONTRACT = "TESTNET_LarvaMfers"; // contract [this value] is ERC721 {}
-const HOLDER_MINT_SUPPLY_THRESHOLD = 2500; // 2500 reserved for token-gated mint
-const FREE_MINT_SUPPLY_THRESHOLD = 5000; // 2500 reserved free for public mint
+const HOLDER_MINT_SUPPLY_LIMIT = 2500; // 2500 reserved for token-gated mint
+const FREE_MINT_SUPPLY_LIMIT = 5000; // 2500 reserved free for public mint
 const MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint
 const PROVENANCE =
 	"293ffdd76ae6ea0e82867a541e51fa02d981804284940779a0a6d22f07fb04a6";
@@ -80,14 +80,14 @@ describe("LarvaMfers", () => {
 	it("Should deploy with correct settings", async () => {
 		expect(await larvaMfers.owner()).to.equal(owner.address);
 		expect(await larvaMfers.MAX_SUPPLY()).to.equal(MAX_SUPPLY);
-		expect(await larvaMfers.HOLDER_MINT_SUPPLY_THRESHOLD()).to.equal(
-			HOLDER_MINT_SUPPLY_THRESHOLD
+		expect(await larvaMfers.HOLDER_MINT_SUPPLY_LIMIT()).to.equal(
+			HOLDER_MINT_SUPPLY_LIMIT
 		);
-		expect(await larvaMfers.FREE_MINT_SUPPLY_THRESHOLD()).to.equal(
-			FREE_MINT_SUPPLY_THRESHOLD
+		expect(await larvaMfers.FREE_MINT_SUPPLY_LIMIT()).to.equal(
+			FREE_MINT_SUPPLY_LIMIT
 		);
-		expect(await larvaMfers.FREE_MINT_SUPPLY_THRESHOLD()).to.equal(
-			FREE_MINT_SUPPLY_THRESHOLD
+		expect(await larvaMfers.FREE_MINT_SUPPLY_LIMIT()).to.equal(
+			FREE_MINT_SUPPLY_LIMIT
 		);
 		expect(await larvaMfers.PROVENANCE()).to.equal(PROVENANCE);
 	});
@@ -170,24 +170,23 @@ describe("LarvaMfers", () => {
 			.reverted;
 	});
 
-
-
-	// TODO:
-
 	// *** public free mint ***
-	it("Should...", async () => {
-		//...
+	it("Should remove token gate at pre-mint supply", async () => {
+		// owner mint supply count up to the token-gate removal
+		// check total supply to see if it actually EQUALS() the pre-mint limit constant
+		// test free mint with wallet4 (non-hodler) - should work
 	});
-	// Should mint free token for non-holder after pre-mint supply threshold - mint with wallet4
-	// Should not mint free token at free mint supply threshold
-	// TODO: setMaxFreeMintPerTx - mint to check
+	// Should mint free token for non-holder after pre-mint supply
+	// TODO: test setMaxFreeMintPerTx - mint w a different batch mint amt to check
 	// TODO: test "mint pausing" scenario - should fail to mint
 	// TODO: test "mint resuming" scenario - should mint
 
-	// *** sale mint ***
-	it("Should...", async () => {
+	it("Should prevent free minting over the free mint supply limit", async () => {
 		//...
+		// mint up supply count to the free mint removal
 	});
+
+	// *** sale mint ***
 	// Should activate sale mint
 	// Should not mint if insufficient ETH sent
 	// Should not mint if too much ETH sent
