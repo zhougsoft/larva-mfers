@@ -159,11 +159,11 @@ describe("LarvaMfers", () => {
 		await expect(
 			larvaMfers
 				.connect(wallet3)
-				.freeMint(wallet4, (await larvaMfers.maxFreeMintPerTx()) + 1)
+				.freeMint(wallet3, (await larvaMfers.maxFreeMintPerTx()) + 1)
 		).to.be.reverted;
-		await expect(larvaMfers.connect(wallet3).freeMint(wallet4, 0)).to.be
+		await expect(larvaMfers.connect(wallet3).freeMint(wallet3, 0)).to.be
 			.reverted;
-		await expect(larvaMfers.connect(wallet3).freeMint(wallet4, -1)).to.be
+		await expect(larvaMfers.connect(wallet3).freeMint(wallet3, -1)).to.be
 			.reverted;
 	});
 
@@ -196,36 +196,32 @@ describe("LarvaMfers", () => {
 	});
 
 	it("Should be able to pause and resume the free mint", async () => {
-		// "mint pausing" scenario - should fail to mint
-		// "mint resuming" scenario - should mint
-		assert(false, "Test not implemented");
+		await larvaMfers.setFreeMintIsActive(false);
+		await expect(larvaMfers.freeMint(wallet4, 1)).to.be.reverted;
+		await larvaMfers.setFreeMintIsActive(true);
+		await testFreeMint(wallet4, 1);
 	});
 
-	it("Should set the max free mint per-tx", async () => {
-		// setMaxFreeMintPerTx - mint w a different batch mint amt to check
-		assert(false, "Test not implemented");
+	it("Should be able to set max free mint per-tx", async () => {
+		const newMaxMint = 2;
+		await larvaMfers.setMaxFreeMintPerTx(newMaxMint);
+		expect(await larvaMfers.maxFreeMintPerTx()).to.equal(newMaxMint);
+		await expect(larvaMfers.freeMint(wallet4, newMaxMint + 1)).to.be.reverted;
 	});
 
 	it("Should mint supply up to free mint supply limit", async () => {
-		// TODO: uncomment when ready to move forward (takes long time to run this)
-
-		// await mintSupplyTo(FREE_MINT_SUPPLY_LIMIT, 100);
-		// expect(await larvaMfers.totalSupply()).to.equal(FREE_MINT_SUPPLY_LIMIT);
-		assert(false, "Test not implemented");
+		await mintSupplyTo(FREE_MINT_SUPPLY_LIMIT, 500);
+		expect(await larvaMfers.totalSupply()).to.equal(FREE_MINT_SUPPLY_LIMIT);
 	});
 
 	it("Should prevent free minting over the free mint supply limit", async () => {
-		// SHOULD WORK:
-		// await testFreeMint(wallet4, await larvaMfers.maxFreeMintPerTx());
-		// SHOULDN'T WORK:
-		// await testFreeMint(wallet4, await larvaMfers.maxFreeMintPerTx() + 1);
-		assert(false, "Test not implemented");
+		await expect(larvaMfers.freeMint(wallet4, 1)).to.be.reverted;
 	});
 
 	//-------- SALE MINT -------------------------------------------------
 	// Should activate sale mint
-	// Should not mint if insufficient ETH sent
-	// Should not mint if too much ETH sent
+	// Should not mint sale if insufficient ETH sent
+	// Should not mint sale if too much ETH sent
 	// Should mint sale if correct amount of ETH sent
 	// Should not batch mint more tokens than sale mint max-per-tx
 	// Should not mint zero or negative number on sale mint input
