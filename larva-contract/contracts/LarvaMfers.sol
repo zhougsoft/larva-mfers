@@ -17,7 +17,7 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	// ---------------------------------------------------------------------------------- STATE
 	address public constant MFERS_ADDRESS =
-		0xF94516Ec531a1a9B34de514342aE3Bc78B940aed;
+		0x79FCDEF22feeD20eDDacbB2587640e45491b757f;
 	address public constant LARVA_ADDRESS =
 		0x5755Ab845dDEaB27E1cfCe00cd629B2e135Acc3d;
 	address public withdrawAddress;

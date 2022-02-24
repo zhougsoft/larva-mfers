@@ -219,7 +219,11 @@ describe("LarvaMfers", () => {
 	});
 
 	//-------- SALE MINT -------------------------------------------------
-	// Should activate sale mint
+
+	it("WIP - Should activate sale mint", async () => {
+		//
+	});
+
 	// Should not mint sale if insufficient ETH sent
 	// Should not mint sale if too much ETH sent
 	// Should mint sale if correct amount of ETH sent
