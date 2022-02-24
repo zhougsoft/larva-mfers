@@ -54,7 +54,7 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	modifier validateMintInput(uint256 _amountOfTokens, uint256 _maxSupply) {
 		require(_amountOfTokens > 0, "Must mint at least one token");
 		require(
-			totalSupply + _amountOfTokens < _maxSupply + 1,
+			(totalSupply + _amountOfTokens) < (_maxSupply + 1),
 			"Supply limit reached"
 		);
 		_;
@@ -124,7 +124,7 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		require(freeMintIsActive, "Free mint closed");
 
 		// If token supply is less than the token-gated mint LIMIT, validate sender's token balance
-		if (totalSupply < HOLDER_MINT_SUPPLY_LIMIT + 1) {
+		if (totalSupply < HOLDER_MINT_SUPPLY_LIMIT) {
 			require(
 				mfersContract.balanceOf(msg.sender) > 0 ||
 					larvaContract.balanceOf(msg.sender) > 0,
@@ -173,7 +173,7 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	function setURIPrefix(string memory _uriPrefix) public onlyOwner {
 		require(
 			!collectionIsHidden,
-			"Cannot set URI while collection is hidden - use 'reveal()' to initialize and expose the URI prefix"
+			"Cannot set URI while collection is hidden - use 'reveal()' to initialize and expose the URI prefix for the first time"
 		);
 		uriPrefix = _uriPrefix;
 	}
@@ -206,9 +206,9 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		paidMintIsActive = _state;
 	}
 
-	// Sets the collection URI and reveals the collection
-	// These operations are coupled to prevent setting and leaking the metadata while the collection is still hidden
+	// One-way function that reveals the collection and sets the content URI
 	function revealCollection(string memory _uriPrefix) public onlyOwner {
+		require(collectionIsHidden, "Collection is already revealed");
 		require(
 			!freeMintIsActive || !paidMintIsActive,
 			"Cannot reveal collection while any minting is active"

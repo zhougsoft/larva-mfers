@@ -58,7 +58,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	modifier validateMintInput(uint256 _amountOfTokens, uint256 _maxSupply) {
 		require(_amountOfTokens > 0, "Must mint at least one token");
 		require(
-			totalSupply + _amountOfTokens < _maxSupply + 1,
+			(totalSupply + _amountOfTokens) < (_maxSupply + 1),
 			"Supply limit reached"
 		);
 		_;
@@ -128,7 +128,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		require(freeMintIsActive, "Free mint closed");
 
 		// If token supply is less than the token-gated mint LIMIT, validate sender's token balance
-		if (totalSupply < HOLDER_MINT_SUPPLY_LIMIT + 1) {
+		if (totalSupply < HOLDER_MINT_SUPPLY_LIMIT) {
 			require(
 				mfersContract.balanceOf(msg.sender) > 0 ||
 					larvaContract.balanceOf(msg.sender) > 0,

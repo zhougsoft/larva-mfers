@@ -2,7 +2,7 @@
 // https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
 
 const { before } = require("mocha");
-const { expect } = require("chai");
+const { expect, assert } = require("chai");
 
 const LARVA_MFERS_CONTRACT = "TESTNET_LarvaMfers"; // contract [this value] is ERC721 {}
 const HOLDER_MINT_SUPPLY_LIMIT = 2500; // 2500 reserved for token-gated mint
@@ -10,7 +10,6 @@ const FREE_MINT_SUPPLY_LIMIT = 5000; // 2500 reserved free for public mint
 const MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint
 const PROVENANCE =
 	"293ffdd76ae6ea0e82867a541e51fa02d981804284940779a0a6d22f07fb04a6";
-
 const ADDR_ZERO = ethers.constants.AddressZero;
 
 describe("LarvaMfers", () => {
@@ -24,7 +23,7 @@ describe("LarvaMfers", () => {
 		mfersContract,
 		larvaLadsContract;
 
-	// Setup contract & signer infra before running tests
+	//-------- PRE-TEST SETUP -------------------------------------------------
 	before(async () => {
 		// Fetch signers
 		[owner, wallet1, wallet2, wallet3, wallet4, withdrawer] =
@@ -120,9 +119,7 @@ describe("LarvaMfers", () => {
 		expect(await larvaMfers.totalSupply()).to.equal(15);
 	});
 
-	//-------- THE MINT -------------------------------------------------
-
-	// *** token-gated pre-mint ***
+	//-------- TOKEN-GATED PRE-MINT -------------------------------------------------
 	it("Should revert if free mint not active", async () => {
 		await expect(larvaMfers.freeMint(wallet1, 1)).to.be.reverted;
 	});
@@ -170,23 +167,62 @@ describe("LarvaMfers", () => {
 			.reverted;
 	});
 
-	// *** public free mint ***
-	it("Should remove token gate at pre-mint supply", async () => {
-		// owner mint supply count up to the token-gate removal
-		// check total supply to see if it actually EQUALS() the pre-mint limit constant
-		// test free mint with wallet4 (non-hodler) - should work
+	//-------- PUBLIC FREE MINT -------------------------------------------------
+	const mintSupplyTo = async (limit, amtPerMint) => {
+		const currentSupply = await larvaMfers.totalSupply();
+		console.log(
+			`\n⌛ minting supply to ${limit} in batches of ${amtPerMint}...`
+		);
+		let remainingToMint = limit - currentSupply;
+		while (remainingToMint > 0) {
+			if (remainingToMint < amtPerMint) {
+				await larvaMfers.ownerMint(owner.address, remainingToMint);
+				remainingToMint = 0;
+			} else {
+				await larvaMfers.ownerMint(owner.address, amtPerMint);
+				remainingToMint -= amtPerMint;
+			}
+		}
+		console.log("✔️ minting complete!\n");
+	};
+
+	it("Should mint supply up to pre-mint supply limit", async () => {
+		await mintSupplyTo(HOLDER_MINT_SUPPLY_LIMIT, 500);
+		expect(await larvaMfers.totalSupply()).to.equal(HOLDER_MINT_SUPPLY_LIMIT);
 	});
-	// Should mint free token for non-holder after pre-mint supply
-	// TODO: test setMaxFreeMintPerTx - mint w a different batch mint amt to check
-	// TODO: test "mint pausing" scenario - should fail to mint
-	// TODO: test "mint resuming" scenario - should mint
+
+	it("Should remove token gate at pre-mint supply limit", async () => {
+		await testFreeMint(wallet4, 1);
+	});
+
+	it("Should be able to pause and resume the free mint", async () => {
+		// "mint pausing" scenario - should fail to mint
+		// "mint resuming" scenario - should mint
+		assert(false, "Test not implemented");
+	});
+
+	it("Should set the max free mint per-tx", async () => {
+		// setMaxFreeMintPerTx - mint w a different batch mint amt to check
+		assert(false, "Test not implemented");
+	});
+
+	it("Should mint supply up to free mint supply limit", async () => {
+		// TODO: uncomment when ready to move forward (takes long time to run this)
+
+		// await mintSupplyTo(FREE_MINT_SUPPLY_LIMIT, 100);
+		// expect(await larvaMfers.totalSupply()).to.equal(FREE_MINT_SUPPLY_LIMIT);
+		assert(false, "Test not implemented");
+	});
 
 	it("Should prevent free minting over the free mint supply limit", async () => {
-		//...
-		// mint up supply count to the free mint removal
+		// SHOULD WORK:
+		// await testFreeMint(wallet4, await larvaMfers.maxFreeMintPerTx());
+		// SHOULDN'T WORK:
+		// await testFreeMint(wallet4, await larvaMfers.maxFreeMintPerTx() + 1);
+		assert(false, "Test not implemented");
 	});
 
-	// *** sale mint ***
+	//-------- SALE MINT -------------------------------------------------
 	// Should activate sale mint
 	// Should not mint if insufficient ETH sent
 	// Should not mint if too much ETH sent
@@ -201,17 +237,17 @@ describe("LarvaMfers", () => {
 	// TODO: test "mint resuming" scenario - should mint
 
 	//-------- WITHDRAWAL -------------------------------------------------
-	it("Should...", async () => {
-		//...
-	});
+	// it("Should...", async () => {
+	// 	//...
+	// });
 	// withdraw - should fail as non-withdraw address
 	// setWithdrawAddress - should change address to withdrawer address
 	// withdraw - should now work as withdraw address (check balances!)
 
 	//-------- REVEAL -------------------------------------------------
-	it("Should...", async () => {
-		//...
-	});
+	// it("Should...", async () => {
+	// 	//...
+	// });
 	// WIP - no particular order...
 	// preventing empty string input on reveal function?
 	// preventing non-owner from revealing?
@@ -219,16 +255,16 @@ describe("LarvaMfers", () => {
 	// prevent attempting to reveal again once it's already revealed
 
 	//-------- ADMIN FUNCTIONS -------------------------------------------------
-	it("Should...", async () => {
-		//...
-	});
+	// it("Should...", async () => {
+	// 	//...
+	// });
 	// setURIPrefix - should work
 	// setURISuffix - should work
 
 	// ### then, as non-owner (group these into "admin permissions work" or smth):
-	it("Should...", async () => {
-		//...
-	});
+	// it("Should...", async () => {
+	// 	//...
+	// });
 	// these should fail:
 	// setURIPrefix
 	// setURISuffix
