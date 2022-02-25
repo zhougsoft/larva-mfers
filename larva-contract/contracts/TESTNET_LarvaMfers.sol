@@ -121,7 +121,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	// ~* free mint *~
 	function freeMint(uint256 _amountOfTokens)
-		public
+		external
 		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_LIMIT)
 		capMaxMint(_amountOfTokens, maxFreeMintPerTx)
 	{
@@ -140,7 +140,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	// ~* paid mint *~
 	function mint(uint256 _amountOfTokens)
-		public
+		external
 		payable
 		validateMintInput(_amountOfTokens, MAX_SUPPLY)
 		capMaxMint(_amountOfTokens, maxPaidMintPerTx)
@@ -155,7 +155,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	// ~* owner mint *~
 	function ownerMint(address _recipient, uint256 _amountOfTokens)
-		public
+		external
 		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_LIMIT)
 		onlyOwner
 	{

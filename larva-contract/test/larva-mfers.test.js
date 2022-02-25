@@ -2,9 +2,15 @@
 
 // TODO:
 
-// MAKE SURE WE ARE *CONNECTING* AS THE WALLET WE WANT TO TEST *AS*
-
+// DOUBLE CHECK we are *CONNECTING* as the wallet we want to *TEST AS*
 // GO THRU EVERY LINE TO MAKE SURE REVERTS ARE BEING TESTED AGAINST CORRECT WALLETS!!!!
+
+// also...
+
+// break test "sections" up by file?
+// hardhat examples on best way to do this?
+// 1 file for deployment/setup, 1 for free mint etc etc
+
 
 // chai/waffle matcher docs:
 // https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
@@ -129,7 +135,7 @@ describe("LarvaMfers", () => {
 	it("Should have default values set", async () => {
 		expect(await larvaMfers.totalSupply()).to.equal(0);
 		expect(await larvaMfers.maxFreeMintPerTx()).to.not.equal(0);
-		expect(await larvaMfers.maxMintPerTx()).to.not.equal(0);
+		expect(await larvaMfers.maxPaidMintPerTx()).to.not.equal(0);
 		expect(await larvaMfers.cost()).to.not.equal(0);
 		expect(await larvaMfers.uriSuffix()).to.not.equal(null);
 	});
@@ -233,7 +239,7 @@ describe("LarvaMfers", () => {
 	//-------- SALE MINT -------------------------------------------------
 	it("Should revert if paid mint not active", async () => {
 		await expect(
-			await larvaMfers.mint(1, { value: hre.ethers.utils.parseEther("0.0069") })
+			larvaMfers.mint(1, { value: hre.ethers.utils.parseEther("0.0069") })
 		).to.be.reverted;
 	});
 
@@ -273,7 +279,7 @@ describe("LarvaMfers", () => {
 		// setCost - mint to check
 	});
 
-	it("Should be able to pause and resume the paid mint", async () => {
+	it("WIP - Should be able to pause and resume the paid mint", async () => {
 		// "mint pausing" paid mint scenario - should fail to mint
 		// "mint resuming" paid mint scenario - should mint
 	});
