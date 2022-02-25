@@ -25,7 +25,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	uint256 public constant MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint
 
 	uint256 public maxFreeMintPerTx = 5;
-	uint256 public maxMintPerTx = 20;
+	uint256 public maxPaidMintPerTx = 20;
 	uint256 public totalSupply;
 	uint256 public cost = 0.0069 ether;
 
@@ -143,9 +143,9 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		public
 		payable
 		validateMintInput(_amountOfTokens, MAX_SUPPLY)
-		capMaxMint(_amountOfTokens, maxMintPerTx)
+		capMaxMint(_amountOfTokens, maxPaidMintPerTx)
 	{
-		require(paidMintIsActive, "Token sale closed");
+		require(paidMintIsActive, "Paid mint closed");
 		require(
 			msg.value == cost * _amountOfTokens,
 			"Invalid payment amount sent: send exact value in the 'cost' property"
@@ -198,8 +198,8 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		maxFreeMintPerTx = _maxFreeMintPerTx;
 	}
 
-	function setMaxMintPerTx(uint256 _maxMintPerTx) public onlyOwner {
-		maxMintPerTx = _maxMintPerTx;
+	function setMaxPaidMintPerTx(uint256 _maxPaidMintPerTx) public onlyOwner {
+		maxPaidMintPerTx = _maxPaidMintPerTx;
 	}
 
 	function setFreeMintIsActive(bool _state) public onlyOwner {

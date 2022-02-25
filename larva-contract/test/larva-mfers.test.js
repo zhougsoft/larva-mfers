@@ -1,8 +1,18 @@
+// ######################
+
+// TODO:
+
+// MAKE SURE WE ARE *CONNECTING* AS THE WALLET WE WANT TO TEST *AS*
+
+// GO THRU EVERY LINE TO MAKE SURE REVERTS ARE BEING TESTED AGAINST CORRECT WALLETS!!!!
+
 // chai/waffle matcher docs:
 // https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
 
+// ######################
+
 const { before } = require("mocha");
-const { expect, assert } = require("chai");
+const { expect } = require("chai");
 
 const LARVA_MFERS_CONTRACT = "TESTNET_LarvaMfers"; // contract [this value] is ERC721 {}
 const HOLDER_MINT_SUPPLY_LIMIT = 2500; // 2500 reserved for token-gated mint
@@ -13,11 +23,12 @@ const PROVENANCE =
 const ADDR_ZERO = ethers.constants.AddressZero;
 
 describe("LarvaMfers", () => {
-	let owner,
-		wallet1,
-		wallet2,
-		wallet3,
-		wallet4,
+	let owner, // deployer wallet
+		wallet1, // mfer holder
+		wallet2, // larva lad holder
+		wallet3, // mfer & larva lad holder
+		wallet4, // free mint tester
+		wallet5, // paid mint tester
 		withdrawer,
 		larvaMfers,
 		mfersContract,
@@ -69,13 +80,37 @@ describe("LarvaMfers", () => {
 		console.info("setup complete!\n");
 	});
 
-	//-------- TEST ENVIRONMENT -------------------------------------------------
+	//-------- UTILS -------------------------------------------------
+	const testFreeMintSuccess = async (wallet, amount) => {
+		await expect(await larvaMfers.connect(wallet).freeMint(amount))
+			.to.emit(larvaMfers, "Transfer")
+			.withArgs(ADDR_ZERO, wallet.address, await larvaMfers.totalSupply());
+	};
+
+	const mintSupplyTo = async (limit, amtPerMint) => {
+		const currentSupply = await larvaMfers.totalSupply();
+		console.log(
+			`\n⌛ minting supply to ${limit} in batches of ${amtPerMint}...`
+		);
+		let remainingToMint = limit - currentSupply;
+		while (remainingToMint > 0) {
+			if (remainingToMint < amtPerMint) {
+				await larvaMfers.ownerMint(owner.address, remainingToMint);
+				remainingToMint = 0;
+			} else {
+				await larvaMfers.ownerMint(owner.address, amtPerMint);
+				remainingToMint -= amtPerMint;
+			}
+		}
+		console.log("✔️ minting complete!\n");
+	};
+
+	//-------- CONTRACT DEPLOYMENT & SETUP -------------------------------------------------
 	it("Should scaffold the test environment correctly", async () => {
 		expect(await mfersContract.totalSupply()).to.equal(2);
 		expect(await larvaLadsContract.totalSupply()).to.equal(2);
 	});
 
-	//-------- CONTRACT DEPLOYMENT & SETUP -------------------------------------------------
 	it("Should deploy with correct settings", async () => {
 		expect(await larvaMfers.owner()).to.equal(owner.address);
 		expect(await larvaMfers.MAX_SUPPLY()).to.equal(MAX_SUPPLY);
@@ -121,7 +156,7 @@ describe("LarvaMfers", () => {
 
 	//-------- TOKEN-GATED PRE-MINT -------------------------------------------------
 	it("Should revert if free mint not active", async () => {
-		await expect(larvaMfers.freeMint(wallet1, 1)).to.be.reverted;
+		await expect(larvaMfers.connect(wallet1).freeMint(1)).to.be.reverted;
 	});
 
 	it("Should activate free mint", async () => {
@@ -130,29 +165,23 @@ describe("LarvaMfers", () => {
 	});
 
 	it("Should not mint free token for non-holder", async () => {
-		await expect(larvaMfers.freeMint(wallet4, 1)).to.be.reverted;
+		await expect(larvaMfers.connect(wallet4).freeMint(1)).to.be.reverted;
 	});
 
-	const testFreeMint = async (wallet, amount) => {
-		await expect(await larvaMfers.connect(wallet).freeMint(amount))
-			.to.emit(larvaMfers, "Transfer")
-			.withArgs(ADDR_ZERO, wallet.address, await larvaMfers.totalSupply());
-	};
-
 	it("Should mint free token for mfer holder", async () => {
-		await testFreeMint(wallet1, 1);
+		await testFreeMintSuccess(wallet1, 1);
 	});
 
 	it("Should mint free token for Larva Lads holder", async () => {
-		await testFreeMint(wallet2, 1);
+		await testFreeMintSuccess(wallet2, 1);
 	});
 
 	it("Should mint free token for mfer + Larva Lads holder", async () => {
-		await testFreeMint(wallet3, 1);
+		await testFreeMintSuccess(wallet3, 1);
 	});
 
 	it("Should batch mint max free allowed tokens per-tx", async () => {
-		await testFreeMint(wallet3, await larvaMfers.maxFreeMintPerTx());
+		await testFreeMintSuccess(wallet3, await larvaMfers.maxFreeMintPerTx());
 	});
 
 	it("Should revert free mint on invalid amount input", async () => {
@@ -168,45 +197,28 @@ describe("LarvaMfers", () => {
 	});
 
 	//-------- PUBLIC FREE MINT -------------------------------------------------
-	const mintSupplyTo = async (limit, amtPerMint) => {
-		const currentSupply = await larvaMfers.totalSupply();
-		console.log(
-			`\n⌛ minting supply to ${limit} in batches of ${amtPerMint}...`
-		);
-		let remainingToMint = limit - currentSupply;
-		while (remainingToMint > 0) {
-			if (remainingToMint < amtPerMint) {
-				await larvaMfers.ownerMint(owner.address, remainingToMint);
-				remainingToMint = 0;
-			} else {
-				await larvaMfers.ownerMint(owner.address, amtPerMint);
-				remainingToMint -= amtPerMint;
-			}
-		}
-		console.log("✔️ minting complete!\n");
-	};
-
 	it("Should mint supply up to pre-mint supply limit", async () => {
 		await mintSupplyTo(HOLDER_MINT_SUPPLY_LIMIT, 500);
 		expect(await larvaMfers.totalSupply()).to.equal(HOLDER_MINT_SUPPLY_LIMIT);
 	});
 
 	it("Should remove token gate at pre-mint supply limit", async () => {
-		await testFreeMint(wallet4, 1);
+		await testFreeMintSuccess(wallet4, 1);
 	});
 
 	it("Should be able to pause and resume the free mint", async () => {
 		await larvaMfers.setFreeMintIsActive(false);
-		await expect(larvaMfers.freeMint(wallet4, 1)).to.be.reverted;
+		await expect(larvaMfers.connect(wallet4).freeMint(1)).to.be.reverted;
 		await larvaMfers.setFreeMintIsActive(true);
-		await testFreeMint(wallet4, 1);
+		await testFreeMintSuccess(wallet4, 1);
 	});
 
 	it("Should be able to set max free mint per-tx", async () => {
 		const newMaxMint = 2;
 		await larvaMfers.setMaxFreeMintPerTx(newMaxMint);
 		expect(await larvaMfers.maxFreeMintPerTx()).to.equal(newMaxMint);
-		await expect(larvaMfers.freeMint(wallet4, newMaxMint + 1)).to.be.reverted;
+		await expect(larvaMfers.connect(wallet4).freeMint(newMaxMint + 1)).to.be
+			.reverted;
 	});
 
 	it("Should mint supply up to free mint supply limit", async () => {
@@ -219,22 +231,52 @@ describe("LarvaMfers", () => {
 	});
 
 	//-------- SALE MINT -------------------------------------------------
-
-	it("WIP - Should activate sale mint", async () => {
-		//
+	it("Should revert if paid mint not active", async () => {
+		await expect(
+			await larvaMfers.mint(1, { value: hre.ethers.utils.parseEther("0.0069") })
+		).to.be.reverted;
 	});
 
-	// Should not mint sale if insufficient ETH sent
-	// Should not mint sale if too much ETH sent
-	// Should mint sale if correct amount of ETH sent
-	// Should not batch mint more tokens than sale mint max-per-tx
-	// Should not mint zero or negative number on sale mint input
-	// Should not mint more than max total supply
-	// TODO: test getTokensOwnedByAddress after mints are done (returns array of ids)
-	// TODO: setMaxMintPerTx - mint to check
-	// TODO: setCost - mint to check
-	// TODO: test "mint pausing" scenario - should fail to mint
-	// TODO: test "mint resuming" scenario - should mint
+	it("Should activate paid mint", async () => {
+		await larvaMfers.setPaidMintIsActive(true);
+		expect(await larvaMfers.paidMintIsActive()).to.equal(true);
+	});
+
+	it("WIP - Should validate paid mint ETH input", async () => {
+		// Should not mint payable if insufficient ETH sent
+		// Should not mint payable if too much ETH sent
+		// Should mint payable if correct amount of ETH sent
+	});
+
+	it("WIP - Should validate paid mint amount input", async () => {
+		// Should not batch mint more tokens than sale mint max-per-tx
+		// Should not mint zero or negative number on sale mint input
+		// Should not mint more than max total supply
+	});
+
+	it("WIP - Should validate paid mint amount input", async () => {
+		// Should not batch mint more tokens than sale mint max-per-tx
+		// Should not mint zero or negative number on sale mint input
+		// Should not mint more than max total supply
+	});
+
+	it("WIP - Should get correct array of tokens owned by an address", async () => {
+		// getTokensOwnedByAddress after mints are done (returns array of ids)
+		// pull new wallet from signers to test this in a controlled manner?
+	});
+
+	it("WIP - Should set max paid mint per-tx", async () => {
+		// setMaxPaidMintPerTx - mint to check
+	});
+
+	it("WIP - Should set cost per-token", async () => {
+		// setCost - mint to check
+	});
+
+	it("Should be able to pause and resume the paid mint", async () => {
+		// "mint pausing" paid mint scenario - should fail to mint
+		// "mint resuming" paid mint scenario - should mint
+	});
 
 	//-------- WITHDRAWAL -------------------------------------------------
 	// it("Should...", async () => {
