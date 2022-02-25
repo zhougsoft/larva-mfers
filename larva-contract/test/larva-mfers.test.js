@@ -203,7 +203,7 @@ describe("LarvaMfers", () => {
 	});
 
 	//-------- PUBLIC FREE MINT -------------------------------------------------
-	it("Should mint supply up to pre-mint supply limit", async () => {
+	it("Should mint supply to pre-mint supply limit", async () => {
 		await mintSupplyTo(HOLDER_MINT_SUPPLY_LIMIT, 500);
 		expect(await larvaMfers.totalSupply()).to.equal(HOLDER_MINT_SUPPLY_LIMIT);
 	});
@@ -212,14 +212,14 @@ describe("LarvaMfers", () => {
 		await testFreeMintSuccess(wallet4, 1);
 	});
 
-	it("Should be able to pause and resume the free mint", async () => {
+	it("Should pause and resume the free mint", async () => {
 		await larvaMfers.setFreeMintIsActive(false);
 		await expect(larvaMfers.connect(wallet4).freeMint(1)).to.be.reverted;
 		await larvaMfers.setFreeMintIsActive(true);
 		await testFreeMintSuccess(wallet4, 1);
 	});
 
-	it("Should be able to set max free mint per-tx", async () => {
+	it("Should set max free mint per-tx", async () => {
 		const newMaxMint = 2;
 		await larvaMfers.setMaxFreeMintPerTx(newMaxMint);
 		expect(await larvaMfers.maxFreeMintPerTx()).to.equal(newMaxMint);
@@ -227,7 +227,7 @@ describe("LarvaMfers", () => {
 			.reverted;
 	});
 
-	it("Should mint supply up to free mint supply limit", async () => {
+	it("Should mint supply to free mint supply limit", async () => {
 		await mintSupplyTo(FREE_MINT_SUPPLY_LIMIT, 500);
 		expect(await larvaMfers.totalSupply()).to.equal(FREE_MINT_SUPPLY_LIMIT);
 	});
@@ -266,9 +266,13 @@ describe("LarvaMfers", () => {
 		// Should not mint more than max total supply
 	});
 
-	it("WIP - Should get correct array of tokens owned by an address", async () => {
+	it("WIP - Should get correct array of tokens owned by address", async () => {
+
+		// wallet5 suitable? or pull in new signer for this specifically
+		// mint some, set the ids based on the transfer event
 		// getTokensOwnedByAddress after mints are done (returns array of ids)
-		// pull new wallet from signers to test this in a controlled manner?
+		// check the transfer event ids against the returned array
+
 	});
 
 	it("WIP - Should set max paid mint per-tx", async () => {
