@@ -11,7 +11,6 @@
 // hardhat examples on best way to do this?
 // 1 file for deployment/setup, 1 for free mint etc etc
 
-
 // chai/waffle matcher docs:
 // https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
 
@@ -43,7 +42,7 @@ describe("LarvaMfers", () => {
 	//-------- PRE-TEST SETUP -------------------------------------------------
 	before(async () => {
 		// Fetch signers
-		[owner, wallet1, wallet2, wallet3, wallet4, withdrawer] =
+		[owner, wallet1, wallet2, wallet3, wallet4, wallet5, withdrawer] =
 			await ethers.getSigners();
 
 		// Deploy placeholder mfers & Larva Lads,
@@ -91,6 +90,10 @@ describe("LarvaMfers", () => {
 		await expect(await larvaMfers.connect(wallet).freeMint(amount))
 			.to.emit(larvaMfers, "Transfer")
 			.withArgs(ADDR_ZERO, wallet.address, await larvaMfers.totalSupply());
+	};
+
+	const testFreeMintRevert = async (wallet, amount) => {
+		await expect(larvaMfers.connect(wallet).freeMint(amount)).to.be.reverted;
 	};
 
 	const mintSupplyTo = async (limit, amtPerMint) => {
@@ -162,7 +165,7 @@ describe("LarvaMfers", () => {
 
 	//-------- TOKEN-GATED PRE-MINT -------------------------------------------------
 	it("Should revert if free mint not active", async () => {
-		await expect(larvaMfers.connect(wallet1).freeMint(1)).to.be.reverted;
+		await testFreeMintRevert(wallet1, 1);
 	});
 
 	it("Should activate free mint", async () => {
@@ -171,7 +174,7 @@ describe("LarvaMfers", () => {
 	});
 
 	it("Should not mint free token for non-holder", async () => {
-		await expect(larvaMfers.connect(wallet4).freeMint(1)).to.be.reverted;
+		await testFreeMintRevert(wallet4, 1);
 	});
 
 	it("Should mint free token for mfer holder", async () => {
@@ -191,15 +194,12 @@ describe("LarvaMfers", () => {
 	});
 
 	it("Should revert free mint on invalid amount input", async () => {
-		await expect(
-			larvaMfers
-				.connect(wallet3)
-				.freeMint(wallet3, (await larvaMfers.maxFreeMintPerTx()) + 1)
-		).to.be.reverted;
-		await expect(larvaMfers.connect(wallet3).freeMint(wallet3, 0)).to.be
-			.reverted;
-		await expect(larvaMfers.connect(wallet3).freeMint(wallet3, -1)).to.be
-			.reverted;
+		await testFreeMintRevert(
+			wallet3,
+			(await larvaMfers.maxFreeMintPerTx()) + 1
+		);
+		await testFreeMintRevert(wallet3, 0);
+		await testFreeMintRevert(wallet3, -1);
 	});
 
 	//-------- PUBLIC FREE MINT -------------------------------------------------
@@ -214,7 +214,7 @@ describe("LarvaMfers", () => {
 
 	it("Should pause and resume the free mint", async () => {
 		await larvaMfers.setFreeMintIsActive(false);
-		await expect(larvaMfers.connect(wallet4).freeMint(1)).to.be.reverted;
+		await testFreeMintRevert(wallet4, 1);
 		await larvaMfers.setFreeMintIsActive(true);
 		await testFreeMintSuccess(wallet4, 1);
 	});
@@ -223,8 +223,7 @@ describe("LarvaMfers", () => {
 		const newMaxMint = 2;
 		await larvaMfers.setMaxFreeMintPerTx(newMaxMint);
 		expect(await larvaMfers.maxFreeMintPerTx()).to.equal(newMaxMint);
-		await expect(larvaMfers.connect(wallet4).freeMint(newMaxMint + 1)).to.be
-			.reverted;
+		await testFreeMintRevert(wallet4, newMaxMint + 1);
 	});
 
 	it("Should mint supply to free mint supply limit", async () => {
@@ -233,7 +232,7 @@ describe("LarvaMfers", () => {
 	});
 
 	it("Should prevent free minting over the free mint supply limit", async () => {
-		await expect(larvaMfers.freeMint(wallet4, 1)).to.be.reverted;
+		await testFreeMintRevert(wallet4, 1);
 	});
 
 	//-------- SALE MINT -------------------------------------------------
@@ -249,9 +248,22 @@ describe("LarvaMfers", () => {
 	});
 
 	it("WIP - Should validate paid mint ETH input", async () => {
+
+
+		// TODO - add `expect` for these
+		// ** make util function for testing paid mints **
+
+
 		// Should not mint payable if insufficient ETH sent
+		await larvaMfers.connect(wallet5).mint(1, { value: "0" });
+		
 		// Should not mint payable if too much ETH sent
+		await larvaMfers.connect(wallet5).mint(1, { value: "9000" });
+		
 		// Should mint payable if correct amount of ETH sent
+		await larvaMfers.connect(wallet5).mint(1, { value: "0.0069" });
+
+
 	});
 
 	it("WIP - Should validate paid mint amount input", async () => {
@@ -267,12 +279,10 @@ describe("LarvaMfers", () => {
 	});
 
 	it("WIP - Should get correct array of tokens owned by address", async () => {
-
 		// wallet5 suitable? or pull in new signer for this specifically
 		// mint some, set the ids based on the transfer event
 		// getTokensOwnedByAddress after mints are done (returns array of ids)
 		// check the transfer event ids against the returned array
-
 	});
 
 	it("WIP - Should set max paid mint per-tx", async () => {
