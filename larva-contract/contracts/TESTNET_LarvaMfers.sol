@@ -112,7 +112,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	}
 
 	// ---------------------------------------------------------------------------------- MiNTs
-	function _batchMint(address _recipient, uint256 _tokenAmount) internal {
+	function batchMint(address _recipient, uint256 _tokenAmount) internal {
 		for (uint256 i = 1; i < _tokenAmount + 1; i++) {
 			_safeMint(_recipient, totalSupply + i);
 		}
@@ -135,7 +135,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 				"Free mint is currently for mfer & larva lad holders only"
 			);
 		}
-		_batchMint(msg.sender, _amountOfTokens);
+		batchMint(msg.sender, _amountOfTokens);
 	}
 
 	// ~* paid mint *~
@@ -150,7 +150,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 			msg.value == cost * _amountOfTokens,
 			"Invalid payment amount sent: send exact value in the 'cost' property"
 		);
-		_batchMint(msg.sender, _amountOfTokens);
+		batchMint(msg.sender, _amountOfTokens);
 	}
 
 	// ~* owner mint *~
@@ -159,11 +159,11 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_LIMIT)
 		onlyOwner
 	{
-		_batchMint(_recipient, _amountOfTokens);
+		batchMint(_recipient, _amountOfTokens);
 	}
 
 	// ---------------------------------------------------------------------------------- OWNER FUNCTiONs
-	function withdraw() public payable onlyOwner {
+	function withdraw() external payable onlyOwner {
 		(bool os, ) = payable(withdrawAddress).call{value: address(this).balance}(
 			""
 		);
