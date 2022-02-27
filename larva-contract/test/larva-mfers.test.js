@@ -155,7 +155,7 @@ describe("LarvaMfers", () => {
 		expect(await larvaMfers.hiddenURI()).to.equal("ipfs://hidden/");
 	});
 
-	it("Mint 1/1 tokens to owner via owner mint", async () => {
+	it("Should mint 1/1 tokens to owner via owner mint", async () => {
 		expect(await larvaMfers.ownerMint(owner.address, 15))
 			.to.emit(larvaMfers, "Transfer")
 			.withArgs(ADDR_ZERO, owner.address, 15);
@@ -236,46 +236,54 @@ describe("LarvaMfers", () => {
 	});
 
 	//-------- SALE MINT -------------------------------------------------
-	it("Should revert if paid mint not active", async () => {
+	it("Should revert if sale mint not active", async () => {
 		await expect(
 			larvaMfers.mint(1, { value: hre.ethers.utils.parseEther("0.0069") })
 		).to.be.reverted;
 	});
 
-	it("Should activate paid mint", async () => {
+	it("Should activate sale mint", async () => {
 		await larvaMfers.setPaidMintIsActive(true);
 		expect(await larvaMfers.paidMintIsActive()).to.equal(true);
 	});
 
-	it("WIP - Should validate paid mint ETH input", async () => {
+	it("Should revert sale mint if invalid ETH sent", async () => {
+		const cost = await larvaMfers.cost();
+		const notEnoughETH = cost.sub(hre.ethers.utils.parseEther("0.001"));
+		const tooMuchETH = cost.add(hre.ethers.utils.parseEther("0.001"));
 
-
-		// TODO - add `expect` for these
-		// ** make util function for testing paid mints **
-
-
-		// Should not mint payable if insufficient ETH sent
-		await larvaMfers.connect(wallet5).mint(1, { value: "0" });
-		
-		// Should not mint payable if too much ETH sent
-		await larvaMfers.connect(wallet5).mint(1, { value: "9000" });
-		
-		// Should mint payable if correct amount of ETH sent
-		await larvaMfers.connect(wallet5).mint(1, { value: "0.0069" });
-
-
+		await expect(larvaMfers.connect(wallet5).mint(1, { value: notEnoughETH }))
+			.to.be.reverted;
+		await expect(larvaMfers.connect(wallet5).mint(1, { value: tooMuchETH })).to
+			.be.reverted;
 	});
 
-	it("WIP - Should validate paid mint amount input", async () => {
-		// Should not batch mint more tokens than sale mint max-per-tx
+
+
+
+
+
+	
+	it("WIP - Should revert sale mint if invalid input given", async () => {
+		const cost = await larvaMfers.cost();
+		const maxPaidMintPerTx = await larvaMfers.maxPaidMintPerTx();
+
+		const maxMintTotalCost = cost.mul(maxPaidMintPerTx);
+
+		// Should not batch mint more tokens than max sale mint pre-tx
+		await expect(
+			larvaMfers.connect(wallet5).mint(maxPaidMintPerTx + 1, {
+				value: maxMintTotalCost.add(cost),
+			})
+		).to.be.reverted;
+
 		// Should not mint zero or negative number on sale mint input
 		// Should not mint more than max total supply
 	});
 
-	it("WIP - Should validate paid mint amount input", async () => {
-		// Should not batch mint more tokens than sale mint max-per-tx
-		// Should not mint zero or negative number on sale mint input
-		// Should not mint more than max total supply
+	it("WIP - Should mint paid token if correct amount of ETH sent", async () => {
+		// expecting success:
+		// await larvaMfers.connect(wallet5).mint(1, { value: "0.0069" });
 	});
 
 	it("WIP - Should get correct array of tokens owned by address", async () => {
