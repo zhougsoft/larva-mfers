@@ -1,16 +1,5 @@
 // ######################
 
-// TODO:
-
-// DOUBLE CHECK we are *CONNECTING* as the wallet we want to *TEST AS*
-// GO THRU EVERY LINE TO MAKE SURE REVERTS ARE BEING TESTED AGAINST CORRECT WALLETS!!!!
-
-// also...
-
-// break test "sections" up by file?
-// hardhat examples on best way to do this?
-// 1 file for deployment/setup, 1 for free mint etc etc
-
 // chai/waffle matcher docs:
 // https://ethereum-waffle.readthedocs.io/en/latest/matchers.html
 
@@ -35,7 +24,7 @@ describe("LarvaMfers", () => {
 		wallet4, // free mint tester
 		wallet5, // paid mint tester
 		wallet6, // wallet contents tester
-		withdrawer,
+		withdrawer, // withdraw tester
 		larvaMfers,
 		mfersContract,
 		larvaLadsContract;
@@ -43,7 +32,7 @@ describe("LarvaMfers", () => {
 	//-------- PRE-TEST SETUP -------------------------------------------------
 	before(async () => {
 		// Fetch signers
-		[owner, wallet1, wallet2, wallet3, wallet4, wallet5, withdrawer] =
+		[owner, wallet1, wallet2, wallet3, wallet4, wallet5, wallet6, withdrawer] =
 			await ethers.getSigners();
 
 		// Deploy placeholder mfers & Larva Lads,
@@ -204,37 +193,37 @@ describe("LarvaMfers", () => {
 	});
 
 	//-------- PUBLIC FREE MINT -------------------------------------------------
-	// it("Should mint supply to pre-mint supply limit", async () => {
-	// 	await mintSupplyTo(HOLDER_MINT_SUPPLY_LIMIT, 500);
-	// 	expect(await larvaMfers.totalSupply()).to.equal(HOLDER_MINT_SUPPLY_LIMIT);
-	// });
+	it("Should mint supply to pre-mint supply limit", async () => {
+		await mintSupplyTo(HOLDER_MINT_SUPPLY_LIMIT, 500);
+		expect(await larvaMfers.totalSupply()).to.equal(HOLDER_MINT_SUPPLY_LIMIT);
+	});
 
-	// it("Should remove token gate at pre-mint supply limit", async () => {
-	// 	await testFreeMintSuccess(wallet4, 1);
-	// });
+	it("Should remove token gate at pre-mint supply limit", async () => {
+		await testFreeMintSuccess(wallet4, 1);
+	});
 
-	// it("Should pause and resume the free mint", async () => {
-	// 	await larvaMfers.setFreeMintIsActive(false);
-	// 	await testFreeMintRevert(wallet4, 1);
-	// 	await larvaMfers.setFreeMintIsActive(true);
-	// 	await testFreeMintSuccess(wallet4, 1);
-	// });
+	it("Should pause and resume the free mint", async () => {
+		await larvaMfers.setFreeMintIsActive(false);
+		await testFreeMintRevert(wallet4, 1);
+		await larvaMfers.setFreeMintIsActive(true);
+		await testFreeMintSuccess(wallet4, 1);
+	});
 
-	// it("Should set max free mint per-tx", async () => {
-	// 	const newMaxMint = 2;
-	// 	await larvaMfers.setMaxFreeMintPerTx(newMaxMint);
-	// 	expect(await larvaMfers.maxFreeMintPerTx()).to.equal(newMaxMint);
-	// 	await testFreeMintRevert(wallet4, newMaxMint + 1);
-	// });
+	it("Should set max free mint per-tx", async () => {
+		const newMaxMint = 2;
+		await larvaMfers.setMaxFreeMintPerTx(newMaxMint);
+		expect(await larvaMfers.maxFreeMintPerTx()).to.equal(newMaxMint);
+		await testFreeMintRevert(wallet4, newMaxMint + 1);
+	});
 
-	// it("Should mint supply to free mint supply limit", async () => {
-	// 	await mintSupplyTo(FREE_MINT_SUPPLY_LIMIT, 500);
-	// 	expect(await larvaMfers.totalSupply()).to.equal(FREE_MINT_SUPPLY_LIMIT);
-	// });
+	it("Should mint supply to free mint supply limit", async () => {
+		await mintSupplyTo(FREE_MINT_SUPPLY_LIMIT, 500);
+		expect(await larvaMfers.totalSupply()).to.equal(FREE_MINT_SUPPLY_LIMIT);
+	});
 
-	// it("Should prevent free minting over the free mint supply limit", async () => {
-	// 	await testFreeMintRevert(wallet4, 1);
-	// });
+	it("Should prevent free minting over the free mint supply limit", async () => {
+		await testFreeMintRevert(wallet4, 1);
+	});
 
 	//-------- SALE MINT -------------------------------------------------
 	it("Should revert if sale mint not active", async () => {
@@ -296,62 +285,123 @@ describe("LarvaMfers", () => {
 			.withArgs(ADDR_ZERO, wallet5.address, await larvaMfers.totalSupply());
 	});
 
+	it("Should set max paid mint per-tx", async () => {
+		const newMaxMint = 10;
+		await larvaMfers.setMaxPaidMintPerTx(newMaxMint);
+		expect(await larvaMfers.maxPaidMintPerTx()).to.equal(newMaxMint);
 
-
-
-
-
-
-
-
-
-
-
-	it("WIP - Should get correct array of tokens owned by address", async () => {
-		// TODO:
-		// using wallet6
-		// mint a few, stash the minted IDs based on the transfer event
-		// getTokensOwnedByAddress after mints are done (returns array of ids)
-		// check the transfer event ids against the returned array
-		assert(false, "Test not implemented");
+		const cost = await larvaMfers.cost();
+		await expect(
+			larvaMfers.connect(wallet5).mint(newMaxMint + 1, {
+				value: cost.mul(newMaxMint + 1),
+			})
+		).to.be.reverted;
 	});
 
-	it("WIP - Should set max paid mint per-tx", async () => {
-		// setMaxPaidMintPerTx - mint to check
-		assert(false, "Test not implemented");
+	it("Should set cost per-token", async () => {
+		const oldCost = await larvaMfers.cost();
+		const newCost = oldCost.mul(2);
+		await larvaMfers.setCost(newCost);
+		expect(await larvaMfers.cost()).to.equal(newCost);
+
+		await expect(
+			larvaMfers.connect(wallet5).mint(1, {
+				value: oldCost,
+			})
+		).to.be.reverted;
+
+		await expect(await larvaMfers.connect(wallet5).mint(1, { value: newCost }))
+			.to.emit(larvaMfers, "Transfer")
+			.withArgs(ADDR_ZERO, wallet5.address, await larvaMfers.totalSupply());
 	});
 
-	it("WIP - Should set cost per-token", async () => {
-		// setCost - mint to check
-		assert(false, "Test not implemented");
+	it("Should pause and resume paid mint", async () => {
+		const cost = await larvaMfers.cost();
+
+		await larvaMfers.setPaidMintIsActive(false);
+		await expect(
+			larvaMfers.connect(wallet5).mint(1, {
+				value: cost,
+			})
+		).to.be.reverted;
+
+		await larvaMfers.setPaidMintIsActive(true);
+		await expect(await larvaMfers.connect(wallet5).mint(1, { value: cost }))
+			.to.emit(larvaMfers, "Transfer")
+			.withArgs(ADDR_ZERO, wallet5.address, await larvaMfers.totalSupply());
 	});
 
-	it("WIP - Should be able to pause and resume the paid mint", async () => {
-		// "mint pausing" paid mint scenario - should fail to mint
-		// "mint resuming" paid mint scenario - should mint
-		assert(false, "Test not implemented");
+
+
+
+
+
+
+
+	it("Should view correct amount of tokens owned by an address", async () => {
+		const testMintAmt = 3;
+		const cost = await larvaMfers.cost();
+		await larvaMfers.connect(wallet6).mint(testMintAmt, {
+			value: cost.mul(testMintAmt),
+		});
+		const tokens = await larvaMfers.getTokensOwnedByAddress(wallet6.address);
+		expect(tokens.length).to.equal(testMintAmt);
 	});
 
-	it("WIP - Should not mint more than max supply limit", async () => {
-		// totalSupply vs. MAX_SUPPLY
-		assert(false, "Test not implemented");
+
+
+
+
+	it("WIP - Should mint to max supply limit", async () => {
+
+
+		// TODO: max supply limit getting hit.... off-by-one error?
+		// wont mint to 10,000
+
+
+		// totalSupply VS. MAX_SUPPLY
+
+		const currentSupply = (await larvaMfers.totalSupply()).toNumber()
+		console.log('premint supply:', currentSupply);
+		
+		await mintSupplyTo(5010, 500)
+		
+		const newSupply = (await larvaMfers.totalSupply()).toNumber()
+		
+		console.log('new supply:', newSupply);
+		
+
+
+		assert(false, "WIP");
 	});
+
+
+
+
+
+
+
+
+
+
+
+
 
 	//-------- WITHDRAWAL -------------------------------------------------
-	it("WIP - Should not withdraw to any non-withdraw address", async () => {
-		// test a multiple wallets?
-		assert(false, "Test not implemented");
-	});
+	// it("WIP - Should not withdraw to any non-withdraw address", async () => {
+	// 	// test a multiple wallets?
+	// 	assert(false, "Test not implemented");
+	// });
 
-	it("WIP - Should update withdraw address", async () => {
-		// setWithdrawAddress()
-		assert(false, "Test not implemented");
-	});
+	// it("WIP - Should update withdraw address", async () => {
+	// 	// setWithdrawAddress()
+	// 	assert(false, "Test not implemented");
+	// });
 
-	it("WIP - Should withdraw contract balance to withdraw address", async () => {
-		// withdraw()
-		assert(false, "Test not implemented");
-	});
+	// it("WIP - Should withdraw contract balance to withdraw address", async () => {
+	// 	// withdraw()
+	// 	assert(false, "Test not implemented");
+	// });
 
 	//-------- REVEAL -------------------------------------------------
 	// it("Should...", async () => {
