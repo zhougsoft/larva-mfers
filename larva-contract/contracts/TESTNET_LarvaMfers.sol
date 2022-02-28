@@ -156,7 +156,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	// ~* owner mint *~
 	function ownerMint(address _recipient, uint256 _amountOfTokens)
 		external
-		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_LIMIT)
+		validateMintInput(_amountOfTokens, MAX_SUPPLY)
 		onlyOwner
 	{
 		batchMint(_recipient, _amountOfTokens);

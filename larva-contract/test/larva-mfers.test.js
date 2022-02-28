@@ -331,13 +331,6 @@ describe("LarvaMfers", () => {
 			.withArgs(ADDR_ZERO, wallet5.address, await larvaMfers.totalSupply());
 	});
 
-
-
-
-
-
-
-
 	it("Should view correct amount of tokens owned by an address", async () => {
 		const testMintAmt = 3;
 		const cost = await larvaMfers.cost();
@@ -348,50 +341,27 @@ describe("LarvaMfers", () => {
 		expect(tokens.length).to.equal(testMintAmt);
 	});
 
-
-
-
-
-	it("WIP - Should mint to max supply limit", async () => {
-
-
-		// TODO: max supply limit getting hit.... off-by-one error?
-		// wont mint to 10,000
-
-
-		// totalSupply VS. MAX_SUPPLY
-
-		const currentSupply = (await larvaMfers.totalSupply()).toNumber()
-		console.log('premint supply:', currentSupply);
-		
-		await mintSupplyTo(5010, 500)
-		
-		const newSupply = (await larvaMfers.totalSupply()).toNumber()
-		
-		console.log('new supply:', newSupply);
-		
-
-
-		assert(false, "WIP");
+	it("Should mint to max supply limit", async () => {
+		const maxSupply = (await larvaMfers.MAX_SUPPLY()).toNumber();
+		await mintSupplyTo(maxSupply, 500);
+		const newSupply = (await larvaMfers.totalSupply()).toNumber();
+		expect(newSupply).to.equal(maxSupply);
 	});
 
 
 
 
-
-
-
-
-
-
-
-
-
 	//-------- WITHDRAWAL -------------------------------------------------
-	// it("WIP - Should not withdraw to any non-withdraw address", async () => {
-	// 	// test a multiple wallets?
-	// 	assert(false, "Test not implemented");
-	// });
+	it("WIP - Should not withdraw to any non-withdraw address", async () => {
+		// test a multiple wallets?
+
+
+		
+		assert(false, "Test not implemented");
+	});
+
+
+
 
 	// it("WIP - Should update withdraw address", async () => {
 	// 	// setWithdrawAddress()
