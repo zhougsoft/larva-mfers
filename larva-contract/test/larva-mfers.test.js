@@ -76,6 +76,11 @@ describe("LarvaMfers", () => {
 	});
 
 	//-------- UTILS -------------------------------------------------
+	const getETHBalance = async wallet => {
+		const bal = await hre.ethers.provider.getBalance(wallet);
+		return bal;
+	};
+
 	const testFreeMintSuccess = async (wallet, amount) => {
 		await expect(await larvaMfers.connect(wallet).freeMint(amount))
 			.to.emit(larvaMfers, "Transfer")
@@ -228,7 +233,9 @@ describe("LarvaMfers", () => {
 	//-------- SALE MINT -------------------------------------------------
 	it("Should revert if sale mint not active", async () => {
 		await expect(
-			larvaMfers.mint(1, { value: hre.ethers.utils.parseEther("0.0069") })
+			larvaMfers
+				.connect(wallet5)
+				.mint(1, { value: hre.ethers.utils.parseEther("0.0069") })
 		).to.be.reverted;
 	});
 
@@ -276,13 +283,15 @@ describe("LarvaMfers", () => {
 	});
 
 	it("Should mint sale if correct amount of ETH sent", async () => {
-		await expect(
-			await larvaMfers
-				.connect(wallet5)
-				.mint(1, { value: hre.ethers.utils.parseEther("0.0069") })
-		)
+		const cost = await larvaMfers.cost();
+		await expect(await larvaMfers.connect(wallet5).mint(1, { value: cost }))
 			.to.emit(larvaMfers, "Transfer")
 			.withArgs(ADDR_ZERO, wallet5.address, await larvaMfers.totalSupply());
+
+		const contractBalance = await hre.ethers.provider.getBalance(
+			larvaMfers.address
+		);
+		expect(contractBalance).to.equal(cost);
 	});
 
 	it("Should set max paid mint per-tx", async () => {
@@ -348,40 +357,54 @@ describe("LarvaMfers", () => {
 		expect(newSupply).to.equal(maxSupply);
 	});
 
-
-
+	it("Should not mint past max supply limit", async () => {
+		await expect(
+			larvaMfers.mint(1, { value: hre.ethers.utils.parseEther("0.0069") })
+		).to.be.reverted;
+	});
 
 	//-------- WITHDRAWAL -------------------------------------------------
-	it("WIP - Should not withdraw to any non-withdraw address", async () => {
-		// test a multiple wallets?
+	it("Should set withdraw address", async () => {
+		const newAddress = withdrawer.address;
+		await larvaMfers.setWithdrawAddress(newAddress);
+		expect(await larvaMfers.withdrawAddress()).to.equal(newAddress);
+	});
 
+	it("Should not withdraw funds to an unauthorized address", async () => {
+		// wallet1 is an unauthorized address in this case
+		await expect(larvaMfers.connect(wallet1).withdraw()).to.be.reverted;
+	});
 
-		
-		assert(false, "Test not implemented");
+	it("Should withdraw funds to the withdraw address", async () => {
+		const withdrawBalanceBefore = await getETHBalance(withdrawer.address);
+		await larvaMfers.connect(withdrawer).withdraw();
+		const contractBalance = await getETHBalance(larvaMfers.address);
+		const withdrawBalanceAfter = await getETHBalance(withdrawer.address);
+
+		expect(contractBalance).to.equal(0);
+		assert(
+			withdrawBalanceAfter.gt(withdrawBalanceBefore),
+			"Withdrawal wallet did not increase in balance after withdrawal"
+		);
 	});
 
 
 
 
-	// it("WIP - Should update withdraw address", async () => {
-	// 	// setWithdrawAddress()
-	// 	assert(false, "Test not implemented");
-	// });
-
-	// it("WIP - Should withdraw contract balance to withdraw address", async () => {
-	// 	// withdraw()
-	// 	assert(false, "Test not implemented");
-	// });
 
 	//-------- REVEAL -------------------------------------------------
-	// it("Should...", async () => {
-	// 	//...
-	// });
+	it("Should...", async () => {
+		assert(false, "WIP");
+	});
 	// WIP - no particular order...
 	// preventing empty string input on reveal function?
 	// preventing non-owner from revealing?
 	// successful reveal collection & all the side effects?
 	// prevent attempting to reveal again once it's already revealed
+
+
+
+	
 
 	//-------- ADMIN FUNCTIONS -------------------------------------------------
 	// it("Should...", async () => {

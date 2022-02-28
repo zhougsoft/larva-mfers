@@ -163,7 +163,12 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	}
 
 	// ---------------------------------------------------------------------------------- OWNER FUNCTiONs
-	function withdraw() external payable onlyOwner {
+	function withdraw() external payable {
+		require(
+			msg.sender == withdrawAddress,
+			"Withdraw must be called from the withdraw address"
+		);
+
 		(bool os, ) = payable(withdrawAddress).call{value: address(this).balance}(
 			""
 		);
