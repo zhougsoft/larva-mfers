@@ -1,12 +1,15 @@
 // TO RUN
-// npx hardhat run scripts/deploy-test-larva-mfers.js
+// npx hardhat run scripts/deploy.js
 
 const hre = require("hardhat");
 
+const CONTRACT_NAME = "TEST_LARMF";
+
+// RINKEBY DEPLOY:
+// https://rinkeby.etherscan.io/address/0x64E71C66505837Eb81f528bd71192c7c351f24E5#readContract
+
 async function main() {
-	const larvaMfersFactory = await hre.ethers.getContractFactory(
-		"TESTNET_LarvaMfers"
-	);
+	const larvaMfersFactory = await hre.ethers.getContractFactory(CONTRACT_NAME);
 	const larvaMfersContract = await larvaMfersFactory.deploy();
 	await larvaMfersContract.deployed();
 	console.log("larva mfers deployed to: ", larvaMfersContract.address);
