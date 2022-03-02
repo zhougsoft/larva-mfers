@@ -127,7 +127,7 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	{
 		require(freeMintIsActive, "Free mint closed");
 
-		// If token supply is less than the token-gated mint LIMIT, validate sender's token balance
+		// If token supply is less than the token-gated mint limit, validate sender's token balance
 		if (totalSupply < HOLDER_MINT_SUPPLY_LIMIT) {
 			require(
 				mfersContract.balanceOf(msg.sender) > 0 ||
@@ -219,9 +219,10 @@ contract TESTNET_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	function revealCollection(string memory _uriPrefix) public onlyOwner {
 		require(collectionIsHidden, "Collection is already revealed");
 		require(
-			!freeMintIsActive || !paidMintIsActive,
-			"Cannot reveal collection while any minting is active"
+			!freeMintIsActive && !paidMintIsActive,
+			"Cannot reveal collection while minting is active"
 		);
+
 		collectionIsHidden = false;
 		setURIPrefix(_uriPrefix);
 	}

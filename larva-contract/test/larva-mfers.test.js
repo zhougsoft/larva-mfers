@@ -150,6 +150,11 @@ describe("LarvaMfers", () => {
 		expect(await larvaMfers.hiddenURI()).to.equal("ipfs://hidden/");
 	});
 
+	it("Should return hidden URI by default", async () => {
+		const hiddenURI = await larvaMfers.hiddenURI();
+		expect(await larvaMfers.tokenURI(1)).to.equal(hiddenURI);
+	});
+
 	it("Should mint 1/1 tokens to owner via owner mint", async () => {
 		expect(await larvaMfers.ownerMint(owner.address, 15))
 			.to.emit(larvaMfers, "Transfer")
@@ -388,42 +393,46 @@ describe("LarvaMfers", () => {
 		);
 	});
 
-
-
-
-
 	//-------- REVEAL -------------------------------------------------
-	it("Should...", async () => {
-		assert(false, "WIP");
+	it("Should not reveal while minting active", async () => {
+		await larvaMfers.setFreeMintIsActive(true);
+		await larvaMfers.setPaidMintIsActive(true);
+		await expect(larvaMfers.revealCollection("ipfs://ngmi/")).to.be.reverted;
+		await larvaMfers.setFreeMintIsActive(false);
+		await expect(larvaMfers.revealCollection("ipfs://ngmi/")).to.be.reverted;
 	});
-	// WIP - no particular order...
-	// preventing empty string input on reveal function?
-	// preventing non-owner from revealing?
-	// successful reveal collection & all the side effects?
-	// prevent attempting to reveal again once it's already revealed
 
+	it("Should reveal collection and set URI", async () => {
+		await larvaMfers.setFreeMintIsActive(false);
+		await larvaMfers.setPaidMintIsActive(false);
 
+		const uri = "ipfs://production/";
+		await larvaMfers.revealCollection(uri);
+		expect(await larvaMfers.collectionIsHidden()).to.equal(false);
+		expect(await larvaMfers.tokenURI(1)).to.contain(uri);
 
-	
+		// Should only ever be able to reveal once
+		await expect(larvaMfers.revealCollection("ipfs://ngmi/")).to.be.reverted;
+	});
 
 	//-------- ADMIN FUNCTIONS -------------------------------------------------
-	// it("Should...", async () => {
-	// 	//...
-	// });
-	// setURIPrefix - should work
-	// setURISuffix - should work
+	it("Should set URI prefix and suffix", async () => {
+		const newPrefix = "ipfs://gmi/";
+		const newSuffix = ".mfer";
+		await larvaMfers.setURIPrefix(newPrefix);
+		await larvaMfers.setURISuffix(newSuffix);
+		expect(await larvaMfers.tokenURI(1)).to.equal(`${newPrefix}1${newSuffix}`);
+	});
 
-	// ### then, as non-owner (group these into "admin permissions work" or smth):
-	// it("Should...", async () => {
-	// 	//...
-	// });
-	// these should fail:
-	// setURIPrefix
-	// setURISuffix
-	// setHiddenURI
-	// setCost
-	// setMaxFreeMintPerTx
-	// setMaxMintPerTx
-	// setFreeMintIsActive
-	// setPaidMintIsActive
+	it("Should not run admin functions from unauthorized address", async () => {
+		const larvaMfersNonOwner = await larvaMfers.connect(wallet1);
+		await expect(larvaMfersNonOwner.setURIPrefix("test")).to.be.reverted;
+		await expect(larvaMfersNonOwner.setURISuffix("test")).to.be.reverted;
+		await expect(larvaMfersNonOwner.setHiddenURI("test")).to.be.reverted;
+		await expect(larvaMfersNonOwner.setCost(0)).to.be.reverted;
+		await expect(larvaMfersNonOwner.setMaxFreeMintPerTx(69)).to.be.reverted;
+		await expect(larvaMfersNonOwner.setMaxPaidMintPerTx(420)).to.be.reverted;
+		await expect(larvaMfersNonOwner.setFreeMintIsActive(true)).to.be.reverted;
+		await expect(larvaMfersNonOwner.setPaidMintIsActive(true)).to.be.reverted;
+	});
 });
