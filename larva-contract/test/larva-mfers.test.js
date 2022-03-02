@@ -8,7 +8,7 @@
 const { before } = require("mocha");
 const { expect, assert } = require("chai");
 
-const LARVA_MFERS_CONTRACT = "TESTNET_LarvaMfers"; // contract [this value] is ERC721 {}
+const LARVA_MFERS_CONTRACT = "LOCAL_LarvaMfers"; // contract [this value] is ERC721 {}
 const HOLDER_MINT_SUPPLY_LIMIT = 2500; // 2500 reserved for token-gated mint
 const FREE_MINT_SUPPLY_LIMIT = 5000; // 2500 reserved free for public mint
 const MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint

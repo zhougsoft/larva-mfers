@@ -22,12 +22,12 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		0x5755Ab845dDEaB27E1cfCe00cd629B2e135Acc3d;
 	address public withdrawAddress;
 
-	uint256 public constant HOLDER_MINT_SUPPLY_LIMIT = 2500; // 1125 for an Asian timezone, 1125 for an American timezone
+	uint256 public constant HOLDER_MINT_SUPPLY_LIMIT = 2500; // 2500 reserved for token-gated mint
 	uint256 public constant FREE_MINT_SUPPLY_LIMIT = 5000; // 2500 reserved free for public mint
-	uint256 public constant MAX_SUPPLY = 10000;
+	uint256 public constant MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint
 
 	uint256 public maxFreeMintPerTx = 5;
-	uint256 public maxMintPerTx = 20;
+	uint256 public maxPaidMintPerTx = 20;
 	uint256 public totalSupply;
 	uint256 public cost = 0.0069 ether;
 
@@ -108,7 +108,7 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	}
 
 	// ---------------------------------------------------------------------------------- MiNTs
-	function _batchMint(address _recipient, uint256 _tokenAmount) internal {
+	function batchMint(address _recipient, uint256 _tokenAmount) internal {
 		for (uint256 i = 1; i < _tokenAmount + 1; i++) {
 			_safeMint(_recipient, totalSupply + i);
 		}
@@ -117,13 +117,13 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	// ~* free mint *~
 	function freeMint(uint256 _amountOfTokens)
-		public
+		external
 		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_LIMIT)
 		capMaxMint(_amountOfTokens, maxFreeMintPerTx)
 	{
 		require(freeMintIsActive, "Free mint closed");
 
-		// If token supply is less than the token-gated mint LIMIT, validate sender's token balance
+		// If token supply is less than the token-gated mint limit, validate sender's token balance
 		if (totalSupply < HOLDER_MINT_SUPPLY_LIMIT) {
 			require(
 				mfersContract.balanceOf(msg.sender) > 0 ||
@@ -131,35 +131,40 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 				"Free mint is currently for mfer & larva lad holders only"
 			);
 		}
-		_batchMint(msg.sender, _amountOfTokens);
+		batchMint(msg.sender, _amountOfTokens);
 	}
 
 	// ~* paid mint *~
 	function mint(uint256 _amountOfTokens)
-		public
+		external
 		payable
 		validateMintInput(_amountOfTokens, MAX_SUPPLY)
-		capMaxMint(_amountOfTokens, maxMintPerTx)
+		capMaxMint(_amountOfTokens, maxPaidMintPerTx)
 	{
-		require(paidMintIsActive, "Token sale closed");
+		require(paidMintIsActive, "Paid mint closed");
 		require(
 			msg.value == cost * _amountOfTokens,
 			"Invalid payment amount sent: send exact value in the 'cost' property"
 		);
-		_batchMint(msg.sender, _amountOfTokens);
+		batchMint(msg.sender, _amountOfTokens);
 	}
 
 	// ~* owner mint *~
 	function ownerMint(address _recipient, uint256 _amountOfTokens)
-		public
-		validateMintInput(_amountOfTokens, FREE_MINT_SUPPLY_LIMIT)
+		external
+		validateMintInput(_amountOfTokens, MAX_SUPPLY)
 		onlyOwner
 	{
-		_batchMint(_recipient, _amountOfTokens);
+		batchMint(_recipient, _amountOfTokens);
 	}
 
 	// ---------------------------------------------------------------------------------- OWNER FUNCTiONs
-	function withdraw() public payable onlyOwner {
+	function withdraw() external payable {
+		require(
+			msg.sender == withdrawAddress,
+			"Withdraw must be called from the withdraw address"
+		);
+
 		(bool os, ) = payable(withdrawAddress).call{value: address(this).balance}(
 			""
 		);
@@ -194,8 +199,8 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 		maxFreeMintPerTx = _maxFreeMintPerTx;
 	}
 
-	function setMaxMintPerTx(uint256 _maxMintPerTx) public onlyOwner {
-		maxMintPerTx = _maxMintPerTx;
+	function setMaxPaidMintPerTx(uint256 _maxPaidMintPerTx) public onlyOwner {
+		maxPaidMintPerTx = _maxPaidMintPerTx;
 	}
 
 	function setFreeMintIsActive(bool _state) public onlyOwner {
@@ -210,9 +215,10 @@ contract LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	function revealCollection(string memory _uriPrefix) public onlyOwner {
 		require(collectionIsHidden, "Collection is already revealed");
 		require(
-			!freeMintIsActive || !paidMintIsActive,
-			"Cannot reveal collection while any minting is active"
+			!freeMintIsActive && !paidMintIsActive,
+			"Cannot reveal collection while minting is active"
 		);
+
 		collectionIsHidden = false;
 		setURIPrefix(_uriPrefix);
 	}

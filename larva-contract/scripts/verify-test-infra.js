@@ -8,12 +8,12 @@ const DEPLOYER_ADDRESS = "0x2c1613Fc5170c072B9EDFdcA8f1C5c93C6bD6db2";
 const MFERS_CONTRACT_ADDY = "0xE86aB3A011DfA4Ca046801ec6e1E4F9e3bB0267A";
 // https://rinkeby.etherscan.io/address/0xE86aB3A011DfA4Ca046801ec6e1E4F9e3bB0267A
 
-const LARVA_LABS_CONTRACT_ADDY = "0x78A653d75c6b8a14BE78493313F0D6Fe4dA741Dc";
+const LARVA_LADS_CONTRACT_ADDY = "0x78A653d75c6b8a14BE78493313F0D6Fe4dA741Dc";
 // https://rinkeby.etherscan.io/address/0x78A653d75c6b8a14BE78493313F0D6Fe4dA741Dc
 
 
 async function main() {
-	if (!MFERS_CONTRACT_ADDY || !LARVA_LABS_CONTRACT_ADDY) {
+	if (!MFERS_CONTRACT_ADDY || !LARVA_LADS_CONTRACT_ADDY) {
 		throw new Error("Missing required address(es)");
 	}
 
@@ -21,7 +21,7 @@ async function main() {
 		address: MFERS_CONTRACT_ADDY,
 		constructorArguments: [DEPLOYER_ADDRESS],
 	});
-	await hre.run("verify:verify", { address: LARVA_LABS_CONTRACT_ADDY });
+	await hre.run("verify:verify", { address: LARVA_LADS_CONTRACT_ADDY });
 }
 
 main()

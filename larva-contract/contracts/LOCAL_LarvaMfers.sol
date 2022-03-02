@@ -1,18 +1,23 @@
 // SPDX-License-Identifier: MIT
 
+//  _,   _, __, _,_  _,   _, _ __, __, __,  _,
+//  |   /_\ |_) | / /_\   |\/| |_  |_  |_) (_
+//  | , | | | \ |/  | |   |  | |   |   | \ , )
+//  ~~~ ~ ~ ~ ~ ~   ~ ~   ~  ~ ~   ~~~ ~ ~  ~
+
+// author: zhoug.eth
+
 pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TEST_LARMF is ERC721, ERC721Burnable, Ownable {
+contract LOCAL_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	using Strings for uint256;
 
 	// ---------------------------------------------------------------------------------- STATE
-	address public constant MFERS_ADDRESS =
-		0xE86aB3A011DfA4Ca046801ec6e1E4F9e3bB0267A;
-	address public constant LARVA_ADDRESS =
-		0x78A653d75c6b8a14BE78493313F0D6Fe4dA741Dc;
+	address public MFERS_ADDRESS;
+	address public LARVA_ADDRESS;
 	address public withdrawAddress;
 
 	uint256 public constant HOLDER_MINT_SUPPLY_LIMIT = 2500; // 2500 reserved for token-gated mint
@@ -35,12 +40,18 @@ contract TEST_LARMF is ERC721, ERC721Burnable, Ownable {
 	bool public freeMintIsActive = false;
 	bool public paidMintIsActive = false;
 
-	IERC721 internal mfersContract = IERC721(MFERS_ADDRESS);
-	IERC721 internal larvaContract = IERC721(LARVA_ADDRESS);
+	IERC721 internal mfersContract;
+	IERC721 internal larvaContract;
 
 	// ---------------------------------------------------------------------------------- the CONSTRUCTOOOR
-	constructor() ERC721("larva mfers", "LARMF") {
+	constructor(address _mfersAddress, address _larvaAddress)
+		ERC721("larva mfers", "LARMF")
+	{
 		withdrawAddress = msg.sender;
+		MFERS_ADDRESS = _mfersAddress;
+		LARVA_ADDRESS = _larvaAddress;
+		mfersContract = IERC721(_mfersAddress);
+		larvaContract = IERC721(_larvaAddress);
 	}
 
 	// ---------------------------------------------------------------------------------- MODiFiERs
