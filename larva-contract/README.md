@@ -1,13 +1,19 @@
-## larva mfers
+# larva mfers
 
-> if u wanna store secret keys, make a copy of `.env.example` named `.env` and add them! the `.env` file is ignored by Git. **HARDCODED SECRETS == BAD!**
+**HARDCODED SECRETS == BAD!**
 
-- run a local chain: `npm run chain`
-- deploy locally: `npm run deploy`
-- deploy to rinkeby: `npm run deploy:rinkeby`
+> if u wanna store secret keys, make a copy of `.env.example` named `.env` and add them! the `.env` file is ignored by Git in this repo thanks to our bro `.gitignore`.
 
 ---
-### useful hardhat commands
+
+- deploy locally: `npm run deploy`
+- deploy to rinkeby: `npm run deploy:rinkeby`
+- verify with etherscan on rinkeby: `npm run deploy:rinkeby`
+
+---
+
+## useful hardhat commands
+
 ```shell
 # compiles artifacts from Solidity contracts
 npx hardhat compile
