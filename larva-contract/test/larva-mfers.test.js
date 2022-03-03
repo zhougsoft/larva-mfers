@@ -12,8 +12,6 @@ const LARVA_MFERS_CONTRACT = "LOCAL_LarvaMfers"; // contract [this value] is ERC
 const HOLDER_MINT_SUPPLY_LIMIT = 2500; // 2500 reserved for token-gated mint
 const FREE_MINT_SUPPLY_LIMIT = 5000; // 2500 reserved free for public mint
 const MAX_SUPPLY = 10000; // total available supply of all larva mfers at mint
-const PROVENANCE =
-	"293ffdd76ae6ea0e82867a541e51fa02d981804284940779a0a6d22f07fb04a6";
 const ADDR_ZERO = ethers.constants.AddressZero;
 
 describe("LarvaMfers", () => {
@@ -127,7 +125,6 @@ describe("LarvaMfers", () => {
 		expect(await larvaMfers.FREE_MINT_SUPPLY_LIMIT()).to.equal(
 			FREE_MINT_SUPPLY_LIMIT
 		);
-		expect(await larvaMfers.PROVENANCE()).to.equal(PROVENANCE);
 	});
 
 	it("Should have default values set", async () => {
@@ -402,7 +399,7 @@ describe("LarvaMfers", () => {
 		await expect(larvaMfers.revealCollection("ipfs://ngmi/")).to.be.reverted;
 	});
 
-	it("Should reveal collection and set URI", async () => {
+	it("Should set URI and reveal collection", async () => {
 		await larvaMfers.setFreeMintIsActive(false);
 		await larvaMfers.setPaidMintIsActive(false);
 
@@ -413,6 +410,12 @@ describe("LarvaMfers", () => {
 
 		// Should only ever be able to reveal once
 		await expect(larvaMfers.revealCollection("ipfs://ngmi/")).to.be.reverted;
+	});
+
+	it("Should set provenance", async () => {
+		const provenance = "this_is_a_test_string";
+		await larvaMfers.setProvenance(provenance);
+		expect(await larvaMfers.provenance()).to.equal(provenance);
 	});
 
 	//-------- ADMIN FUNCTIONS -------------------------------------------------
@@ -429,6 +432,7 @@ describe("LarvaMfers", () => {
 		await expect(larvaMfersNonOwner.setURIPrefix("test")).to.be.reverted;
 		await expect(larvaMfersNonOwner.setURISuffix("test")).to.be.reverted;
 		await expect(larvaMfersNonOwner.setHiddenURI("test")).to.be.reverted;
+		await expect(larvaMfersNonOwner.setProvenance("test")).to.be.reverted;
 		await expect(larvaMfersNonOwner.setCost(0)).to.be.reverted;
 		await expect(larvaMfersNonOwner.setMaxFreeMintPerTx(69)).to.be.reverted;
 		await expect(larvaMfersNonOwner.setMaxPaidMintPerTx(420)).to.be.reverted;

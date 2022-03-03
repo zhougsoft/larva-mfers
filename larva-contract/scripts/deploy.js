@@ -3,7 +3,7 @@
 
 const hre = require("hardhat");
 
-const CONTRACT_NAME = "TEST_LARMF";
+const CONTRACT_NAME = "LarvaMfers";
 
 // RINKEBY DEPLOY:
 // https://rinkeby.etherscan.io/address/0x64E71C66505837Eb81f528bd71192c7c351f24E5#readContract

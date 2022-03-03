@@ -29,12 +29,13 @@ contract LOCAL_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 	uint256 public totalSupply;
 	uint256 public cost = 0.0069 ether;
 
-	string public constant PROVENANCE =
-		"293ffdd76ae6ea0e82867a541e51fa02d981804284940779a0a6d22f07fb04a6";
+
+
 	string internal uriPrefix;
 	string public uriSuffix = ".json";
 	string public hiddenURI =
 		"HIDDEN: set this value as Owner with 'setHiddenURI()'";
+	string public provenance;
 
 	bool public collectionIsHidden = true;
 	bool public freeMintIsActive = false;
@@ -193,6 +194,10 @@ contract LOCAL_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 
 	function setHiddenURI(string memory _hiddenURI) public onlyOwner {
 		hiddenURI = _hiddenURI;
+	}
+
+	function setProvenance(string memory _provenance) public onlyOwner {
+		provenance = _provenance;
 	}
 
 	function setCost(uint256 _newCost) public onlyOwner {
