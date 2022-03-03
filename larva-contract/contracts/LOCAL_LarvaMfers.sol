@@ -133,7 +133,7 @@ contract LOCAL_LarvaMfers is ERC721, ERC721Burnable, Ownable {
 			require(
 				mfersContract.balanceOf(msg.sender) > 0 ||
 					larvaContract.balanceOf(msg.sender) > 0,
-				"Free mint is currently for mfer & larva lad holders only"
+				"Free mint is currently for mfer and larva lad holders only"
 			);
 		}
 		batchMint(msg.sender, _amountOfTokens);
