@@ -8,7 +8,7 @@
 
 - deploy locally: `npm run deploy`
 - deploy to rinkeby: `npm run deploy:rinkeby`
-- verify with etherscan on rinkeby: `npm run deploy:rinkeby`
+- verify with etherscan on rinkeby: `npm run verify:rinkeby`
 
 ---
 
