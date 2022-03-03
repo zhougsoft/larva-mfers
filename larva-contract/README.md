@@ -1,22 +1,32 @@
-## larva mfers contract
+## larva mfers
 
-run a local chain: `npm run chain`
-deploy locally: `npm run deploy`
-deploy to rinkeby: `npm run deploy:rinkeby`
+> if u wanna store secret keys, make a copy of `.env.example` named `.env` and add them! the `.env` file is ignored by Git. **HARDCODED SECRETS == BAD!**
 
-useful hardhat tasks:
+- run a local chain: `npm run chain`
+- deploy locally: `npm run deploy`
+- deploy to rinkeby: `npm run deploy:rinkeby`
 
+---
+### useful hardhat commands
 ```shell
-npx hardhat accounts # displays VM wallet addresses, custom built in hardhat.config.js
-npx hardhat compile # compiles artifacts from Solidity contracts
-npx hardhat clean # clears out artifacts
-npx hardhat test # runs tests in test folder
-npx hardhat node # runs the local blockchain VM
+# compiles artifacts from Solidity contracts
+npx hardhat compile
+
+# clears out contract artifacts
+npx hardhat clean
+
+# runs all tests in test folder
+npx hardhat test
+
+# runs the local virtualized blockchain
+npx hardhat node
+
+# display VM wallet addresses (custom built in hardhat.config.js)
+npx hardhat accounts
+
+# run custom scripts
+npx hardhat run scripts/your-script.js
+
+# get the docs
 npx hardhat help
-```
-
-run custom scripts for interacting with the network & contracts:
-
-```shell
-node scripts/sample-script.js
 ```
