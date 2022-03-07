@@ -7,7 +7,7 @@ const network = NETWORK.eth;
 // General metadata for Ethereum
 const namePrefix = 'larva mfer';
 const description =
-	'Larva Mfers are a play on Larva Lads, and everything they were a play on as well. This project is in the public domain; feel free to use Larva Mfers any way you want.';
+	'Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. This project is in the public domain, feel free to use Larva Mfers in any way you want.';
 const baseUri = 'ipfs://REPLACE';
 
 // OPTIONAL: Metadata only applied if Solana network is selected
@@ -18,22 +18,26 @@ const solanaMetadata = {};
 
 // 10k
 
-const TOTAL_COMMONS = 8000;
-const COMMONS_MAGICS = 500;
+const TOTAL_COMMONS = 500; // how many commons will exist
+const COMMONS_MAGICS = 100; // how many commons will be "magic"
 
-const TOTAL_ZOMBIES = 1000;
-const ZOMBIES_MAGICS = 50;
+const TOTAL_ZOMBIES = 0; // how many zombies will exist
+const ZOMBIES_MAGICS = 0; // how many zombies will be "magic"
 
-const TOTAL_APES = 750;
-const APES_MAGICS = 25;
+const TOTAL_APES = 0; // how many apes will exist
+const APES_MAGICS = 0; // how many apes will be "magic"
 
-const TOTAL_ALIENS = 250;
-const ALIENS_MAGICS = 10;
+const TOTAL_ALIENS = 0; // how many aliens will exist
+const ALIENS_MAGICS = 0; // how many aliens will be "magic"
 
 
 const half = num => Math.round(num / 2);
+const quarter = num => Math.round(num / 4);
 
 const TOTAL_RUN_AMOUNT = TOTAL_COMMONS + TOTAL_ZOMBIES + TOTAL_APES + TOTAL_ALIENS;
+
+
+// FULL DISCLOSURE, NO IDEA WHAT I WAS THINKING WHEN I DID THIS, BUT IT WORKS. SO YEAH...
 
 const COMMONS_AMT1 = half(TOTAL_COMMONS);
 const COMMONS_MAGIC1 = COMMONS_AMT1 + half(COMMONS_MAGICS);
@@ -55,6 +59,8 @@ const ALIENS_MAGIC1 = ALIENS_AMT1 + half(ALIENS_MAGICS);
 const ALIENS_MAGIC2 = ALIENS_MAGIC1 + half(ALIENS_MAGICS);
 const ALIENS_AMT2 = TOTAL_RUN_AMOUNT;
 
+// ^ NOT TOUCHING IT LOL.
+
 
 
 const layerConfigurations = [
@@ -68,7 +74,6 @@ const layerConfigurations = [
 			{ name: 'Type' },
 			{ name: 'Outline' },
 			{ name: 'Mouth' },
-			{ name: 'Earring' },
 			{ name: 'Eyewear' },
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
@@ -82,8 +87,7 @@ const layerConfigurations = [
 			{ name: 'Background' },
 			{ name: 'Type' },
 			{ name: 'Outline' },
-			{ name: 'Mouth' },
-			{ name: 'Earring' },
+			{ name: 'AltMouth' },
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
 			{ name: 'Magic' },
@@ -96,7 +100,7 @@ const layerConfigurations = [
 			{ name: 'Background' },
 			{ name: 'Type' },
 			{ name: 'Outline' },
-			{ name: 'Mouth' },
+			{ name: 'AltMouth' },
 			{ name: 'Earring' },
 			{ name: 'Headwear' },
 			{ name: 'Magic' },
@@ -126,7 +130,6 @@ const layerConfigurations = [
 			{ name: 'Background' },
 			{ name: 'Zombie' },
 			{ name: 'Outline' },
-			{ name: 'Earring' },
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
 			{ name: 'Smoke' },
@@ -139,7 +142,6 @@ const layerConfigurations = [
 			{ name: 'Background' },
 			{ name: 'Zombie' },
 			{ name: 'Outline' },
-			{ name: 'Earring' },
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
 			{ name: 'Magic' },
@@ -179,7 +181,6 @@ const layerConfigurations = [
 			{ name: 'Background' },
 			{ name: 'Ape' },
 			{ name: 'Outline' },
-			{ name: 'Earring' },
 			{ name: 'Eyewear' },
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
@@ -192,7 +193,6 @@ const layerConfigurations = [
 			{ name: 'Background' },
 			{ name: 'Ape' },
 			{ name: 'Outline' },
-			{ name: 'Earring' },
 			{ name: 'Eyewear' },
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
@@ -232,7 +232,6 @@ const layerConfigurations = [
 			{ name: 'Background' },
 			{ name: 'Alien' },
 			{ name: 'Outline' },
-			{ name: 'Earring' },
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
 			{ name: 'Smoke' },
@@ -245,7 +244,6 @@ const layerConfigurations = [
 			{ name: 'Background' },
 			{ name: 'Alien' },
 			{ name: 'Outline' },
-			{ name: 'Earring' },
 			{ name: 'Hair' },
 			{ name: 'Headphones' },
 			{ name: 'Magic' },
