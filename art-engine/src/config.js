@@ -15,17 +15,17 @@ const solanaMetadata = {};
 
 // CALCULATIN THE BULLSHAT
 
-const TOTAL_COMMONS = 2000; // how many commons will exist
-const COMMONS_MAGICS = 100; // how many commons will be "magic"
+const TOTAL_COMMONS = 400; // how many commons will exist
+const COMMONS_MAGICS = 0; // how many commons will be "magic"
 
-const TOTAL_ZOMBIES = 500; // how many zombies will exist
-const ZOMBIES_MAGICS = 10; // how many zombies will be "magic"
+const TOTAL_ZOMBIES = 50; // how many zombies will exist
+const ZOMBIES_MAGICS = 0; // how many zombies will be "magic"
 
-const TOTAL_APES = 500; // how many apes will exist
-const APES_MAGICS = 10; // how many apes will be "magic"
+const TOTAL_APES = 40; // how many apes will exist
+const APES_MAGICS = 0; // how many apes will be "magic"
 
-const TOTAL_ALIENS = 100; // how many aliens will exist
-const ALIENS_MAGICS = 2; // how many aliens will be "magic"
+const TOTAL_ALIENS = 10; // how many aliens will exist
+const ALIENS_MAGICS = 0; // how many aliens will be "magic"
 
 const half = num => Math.round(num / 2);
 const quarter = num => Math.round(num / 4);
