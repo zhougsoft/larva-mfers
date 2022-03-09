@@ -15,16 +15,16 @@ const solanaMetadata = {};
 
 // CALCULATIN THE BULLSHAT
 
-const TOTAL_COMMONS = 400; // how many commons will exist
+const TOTAL_COMMONS = 200; // how many commons will exist
 const COMMONS_MAGICS = 0; // how many commons will be "magic"
 
-const TOTAL_ZOMBIES = 50; // how many zombies will exist
+const TOTAL_ZOMBIES = 25; // how many zombies will exist
 const ZOMBIES_MAGICS = 0; // how many zombies will be "magic"
 
-const TOTAL_APES = 40; // how many apes will exist
+const TOTAL_APES = 20; // how many apes will exist
 const APES_MAGICS = 0; // how many apes will be "magic"
 
-const TOTAL_ALIENS = 10; // how many aliens will exist
+const TOTAL_ALIENS = 5; // how many aliens will exist
 const ALIENS_MAGICS = 0; // how many aliens will be "magic"
 
 const half = num => Math.round(num / 2);
@@ -39,7 +39,6 @@ const COMMONS_AMT1_ALT = quarter(TOTAL_COMMONS);
 const COMMONS_AMT1 = half(TOTAL_COMMONS);
 const COMMONS_MAGIC1 = COMMONS_AMT1 + half(COMMONS_MAGICS);
 const COMMONS_MAGIC2 = COMMONS_MAGIC1 + half(COMMONS_MAGICS);
-
 
 // quarter of the remaiing commons with headphones
 const COMMONS_AMT2_ALT = quarter(TOTAL_COMMONS - COMMONS_MAGIC2);
@@ -62,23 +61,33 @@ const ALIENS_AMT2 = TOTAL_RUN_AMOUNT;
 
 // ^ NOT TOUCHING IT LOL.
 
+const BACKGROUND_LAYER = {
+	name: "Background",
+	options: {
+		bypassDNA: true,
+	},
+};
+
+const OUTLINE_LAYER = {
+	name: "Outline",
+	options: {
+		bypassDNA: true,
+	},
+};
+
+const SPECIAL_MOUTH = { name: "SpecialMouth", options: {displayName: "Mouth"} }
+
 const layerConfigurations = [
-
-
-
-
-
-
 	// --- COMMONS ---
 
 	// commons w/ hair & headphones - ALT TRAITS
 	{
 		growEditionSizeTo: COMMONS_AMT1_ALT,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Type" },
-			{ name: "Outline" },
-			{ name: "SpecialMouth" },
+			OUTLINE_LAYER,
+			SPECIAL_MOUTH,
 			{ name: "Eyewear" },
 			{ name: "Hair" },
 			{ name: "Headphones" },
@@ -88,9 +97,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: COMMONS_AMT1,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Type" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Mouth" },
 			{ name: "Eyewear" },
 			{ name: "Hair" },
@@ -102,9 +111,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: COMMONS_MAGIC1,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Type" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Mouth" },
 			{ name: "Hair" },
 			{ name: "Headphones" },
@@ -115,9 +124,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: COMMONS_MAGIC2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Type" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Mouth" },
 			{ name: "Earring" },
 			{ name: "Headwear" },
@@ -128,10 +137,10 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: COMMONS_AMT2_ALT,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Type" },
-			{ name: "Outline" },
-			{ name: "SpecialMouth" },
+			OUTLINE_LAYER,
+			SPECIAL_MOUTH,
 			{ name: "Earring" },
 			{ name: "Eyewear" },
 			{ name: "Headwear" },
@@ -141,9 +150,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: COMMONS_AMT2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Type" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Mouth" },
 			{ name: "Earring" },
 			{ name: "Eyewear" },
@@ -158,9 +167,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: ZOMBIES_AMT1,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Zombie" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Hair" },
 			{ name: "Headphones" },
 			{ name: "Smoke" },
@@ -170,9 +179,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: ZOMBIES_MAGIC2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Zombie" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Hair" },
 			{ name: "Headphones" },
 			{ name: "Magic" },
@@ -182,9 +191,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: ZOMBIES_MAGIC2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Zombie" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Headwear" },
 			{ name: "Earring" },
 			{ name: "Magic" },
@@ -194,9 +203,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: ZOMBIES_AMT2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Zombie" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Headwear" },
 			{ name: "Earring" },
 			{ name: "Smoke" },
@@ -209,9 +218,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: APES_AMT1,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Ape" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Eyewear" },
 			{ name: "Hair" },
 			{ name: "Headphones" },
@@ -221,9 +230,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: APES_MAGIC1,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Ape" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Eyewear" },
 			{ name: "Hair" },
 			{ name: "Headphones" },
@@ -233,9 +242,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: APES_MAGIC2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Ape" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Earring" },
 			{ name: "Eyewear" },
 			{ name: "Headwear" },
@@ -245,9 +254,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: APES_AMT2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Ape" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Earring" },
 			{ name: "Eyewear" },
 			{ name: "Headwear" },
@@ -260,9 +269,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: ALIENS_AMT1,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Alien" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Hair" },
 			{ name: "Headphones" },
 			{ name: "Smoke" },
@@ -272,9 +281,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: ALIENS_MAGIC1,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Alien" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Hair" },
 			{ name: "Headphones" },
 			{ name: "Magic" },
@@ -284,9 +293,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: ALIENS_MAGIC2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Alien" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Earring" },
 			{ name: "Headwear" },
 			{ name: "Magic" },
@@ -296,9 +305,9 @@ const layerConfigurations = [
 	{
 		growEditionSizeTo: ALIENS_AMT2,
 		layersOrder: [
-			{ name: "Background" },
+			BACKGROUND_LAYER,
 			{ name: "Alien" },
-			{ name: "Outline" },
+			OUTLINE_LAYER,
 			{ name: "Earring" },
 			{ name: "Headwear" },
 			{ name: "Smoke" },
@@ -346,6 +355,8 @@ const background = {
 	static: false,
 	default: "#000000",
 };
+
+// TODO: generate
 
 const extraMetadata = {};
 
