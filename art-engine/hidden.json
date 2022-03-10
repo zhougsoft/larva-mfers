@@ -1,16 +1,17 @@
 {
 	"name": "larva mfers",
-	"description": "HATCHING SOON... Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. This project is in the public domain, feel free to use Larva Mfers in any way you want.",
-	"image": "ipfs://Qmf7MPdo24Wjm7FxizZi5K8cKAxXR9NfHXYTfGS7MFd1XP/hidden.gif",
+	"description": "HATCHING VERY SOON... Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. This project is in the public domain, feel free to use Larva Mfers in any way you want.",
+	"image": "ipfs://Qmf7Dy9NBnEwswJcnjr7Px8rdDfmxPPyxdCokAeYK6fTWD/hidden.gif",
+	"larvaMfersRule": true,
 	"derivedFrom": [
 		{
 			"name": "mfers",
-			"chainId": "1",
+			"network": "Ethereum",
 			"src": "0x79FCDEF22feeD20eDDacbB2587640e45491b757f"
 		},
 		{
 			"name": "Larva Lads",
-			"chainId": "1",
+			"network": "Ethereum",
 			"src": "0x5755Ab845dDEaB27E1cfCe00cd629B2e135Acc3d"
 		}
 	]

@@ -10,15 +10,12 @@ const description =
 	"Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. This project is in the public domain, feel free to use Larva Mfers in any way you want.";
 const baseUri = "ipfs://REPLACE";
 
-// OPTIONAL: Metadata only applied if Solana network is selected
-const solanaMetadata = {};
-
 // CALCULATIN THE BULLSHAT
 
 const TOTAL_COMMONS = 6000; // how many commons will exist
 const COMMONS_MAGICS = 0; // how many commons will be "magic"
 
-const TOTAL_ZOMBIES = 450 ; // how many zombies will exist
+const TOTAL_ZOMBIES = 450; // how many zombies will exist
 const ZOMBIES_MAGICS = 0; // how many zombies will be "magic"
 
 const TOTAL_APES = 450; // how many apes will exist
@@ -75,7 +72,10 @@ const OUTLINE_LAYER = {
 	},
 };
 
-const SPECIAL_MOUTH = { name: "SpecialMouth", options: {displayName: "Mouth"} }
+const SPECIAL_MOUTH = {
+	name: "SpecialMouth",
+	options: { displayName: "Mouth" },
+};
 
 const layerConfigurations = [
 	// --- COMMONS ---
@@ -396,7 +396,6 @@ module.exports = {
 	text,
 	namePrefix,
 	network,
-	solanaMetadata,
 	gif,
 	preview_gif,
 };
