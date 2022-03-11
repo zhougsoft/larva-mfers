@@ -21,11 +21,15 @@ const {
 	network,
 	gif,
 } = require(`${basePath}/src/config.js`);
+
+// setup two canvas contexts - one for main img and one for cutout img
 const canvas = createCanvas(format.width, format.height);
 const canvasCutout = createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
-const ctxCutout = canvas.getContext("2d");
+const ctxCutout = canvasCutout.getContext("2d");
 ctx.imageSmoothingEnabled = format.smoothing;
+ctxCutout.imageSmoothingEnabled = format.smoothing;
+
 var metadataList = [];
 var attributesList = [];
 var dnaList = new Set();
@@ -41,6 +45,7 @@ const buildSetup = () => {
 	fs.mkdirSync(buildDir);
 	fs.mkdirSync(`${buildDir}/json`);
 	fs.mkdirSync(`${buildDir}/images`);
+	fs.mkdirSync(`${buildDir}/cutouts`);
 	if (gif.export) {
 		fs.mkdirSync(`${buildDir}/gifs`);
 	}
@@ -112,6 +117,13 @@ const saveImage = _editionCount => {
 	fs.writeFileSync(
 		`${buildDir}/images/${_editionCount}.png`,
 		canvas.toBuffer("image/png")
+	);
+};
+
+const saveCutoutImage = _editionCount => {
+	fs.writeFileSync(
+		`${buildDir}/cutouts/${_editionCount}.png`,
+		canvasCutout.toBuffer("image/png")
 	);
 };
 
@@ -284,6 +296,18 @@ const drawElement = (_renderObject, _index, _layersLen) => {
 	addAttributes(_renderObject);
 };
 
+const drawCutoutElement = (_renderObject, _index, _layersLen) => {
+	ctxCutout.globalAlpha = _renderObject.layer.opacity;
+	ctxCutout.globalCompositeOperation = _renderObject.layer.blend;
+	ctxCutout.drawImage(
+		_renderObject.loadedImage,
+		0,
+		0,
+		format.width,
+		format.height
+	);
+};
+
 const constructLayerToDna = (_dna = "", _layers = []) => {
 	let mappedDnaToLayers = _layers.map((layer, index) => {
 		let selectedElement = layer.elements.find(
@@ -427,25 +451,23 @@ const startCreating = async () => {
 			let newDna = createDna(layers);
 			if (isDnaUnique(dnaList, newDna)) {
 				let results = constructLayerToDna(newDna, layers);
+
+				// MAIN IMAGE
 				let loadedElements = [];
 
-				// ALT CUTOUT VERSION
+				// ALT CUTOUT IMAGE
 				let loadedElementsCutout = [];
 
 				results.forEach(layer => {
-
-					// HOOK INTO HERE AND CREATE ALT NO-BG VERSION
-					// populate loadedElementsCutout with all except BG!
-					console.log('IS THIS LAYER THE BACKGROUND? -> ', layer.name);
-					// if layer.name !== "Background" then:
-					// loadedElementsCutout.push(loadLayerImg(layer))
-
-					
-					// main NFT image:
+					// load all layers except the background to the no-bg cutout version
+					if (layer.name !== "Background") {
+						loadedElementsCutout.push(loadLayerImg(layer));
+					}
+					// load layers into main display image
 					loadedElements.push(loadLayerImg(layer));
-
 				});
 
+				// CREATE MAIN DISPLAY IMAGE
 				await Promise.all(loadedElements).then(renderObjectArray => {
 					debugLogs ? console.log("Clearing canvas") : null;
 					ctx.clearRect(0, 0, format.width, format.height);
@@ -488,6 +510,21 @@ const startCreating = async () => {
 						)}`
 					);
 				});
+
+				// CREATE SECONDARY CUTOUT IMAGE
+				await Promise.all(loadedElementsCutout).then(renderObjectArray => {
+					ctxCutout.clearRect(0, 0, format.width, format.height);
+					renderObjectArray.forEach((renderObject, index) => {
+						drawCutoutElement(
+							renderObject,
+							index,
+							layerConfigurations[layerConfigIndex].layersOrder.length
+						);
+					});
+					saveCutoutImage(abstractedIndexes[0]);
+					console.log(`Created cutout for #${abstractedIndexes[0]}`);
+				});
+
 				dnaList.add(filterDNAOptions(newDna));
 				editionCount++;
 				abstractedIndexes.shift();
