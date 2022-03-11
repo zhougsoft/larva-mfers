@@ -1,5 +1,4 @@
 const basePath = process.cwd();
-const { MODE } = require(`${basePath}/constants/blend_mode.js`);
 const { NETWORK } = require(`${basePath}/constants/network.js`);
 
 const network = NETWORK.eth;
@@ -10,19 +9,18 @@ const description =
 	"Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. This project is in the public domain, feel free to use Larva Mfers in any way you want.";
 const baseUri = "ipfs://REPLACE";
 
-// CALCULATIN THE BULLSHAT
+// PROD - TOTAL SUPPLY: 6699
+// const TOTAL_COMMONS = 5699; // how many commons will exist
+// const TOTAL_ZOMBIES = 500; // how many zombies will exist
+// const TOTAL_APES = 450; // how many apes will exist
+// const TOTAL_ALIENS = 50; // how many aliens will exist
 
-const TOTAL_COMMONS = 6000; // how many commons will exist
-const COMMONS_MAGICS = 0; // how many commons will be "magic"
 
-const TOTAL_ZOMBIES = 450; // how many zombies will exist
-const ZOMBIES_MAGICS = 0; // how many zombies will be "magic"
-
-const TOTAL_APES = 450; // how many apes will exist
-const APES_MAGICS = 0; // how many apes will be "magic"
-
-const TOTAL_ALIENS = 69; // how many aliens will exist
-const ALIENS_MAGICS = 0; // how many aliens will be "magic"
+// debug size
+const TOTAL_COMMONS = 15;
+const TOTAL_ZOMBIES = 5;
+const TOTAL_APES = 5;
+const TOTAL_ALIENS = 5;
 
 const half = num => Math.round(num / 2);
 const quarter = num => Math.round(num / 4);
@@ -30,33 +28,16 @@ const quarter = num => Math.round(num / 4);
 const TOTAL_RUN_AMOUNT =
 	TOTAL_COMMONS + TOTAL_ZOMBIES + TOTAL_APES + TOTAL_ALIENS;
 
-// FULL DISCLOSURE, NO IDEA WHAT I WAS THINKING WHEN I DID THIS, BUT IT WORKS. SO YEAH...
-
 const COMMONS_AMT1_ALT = quarter(TOTAL_COMMONS);
 const COMMONS_AMT1 = half(TOTAL_COMMONS);
-const COMMONS_MAGIC1 = COMMONS_AMT1 + half(COMMONS_MAGICS);
-const COMMONS_MAGIC2 = COMMONS_MAGIC1 + half(COMMONS_MAGICS);
-
-// quarter of the remaiing commons with headphones
-const COMMONS_AMT2_ALT = quarter(TOTAL_COMMONS - COMMONS_MAGIC2);
+const COMMONS_AMT2_ALT = quarter(TOTAL_COMMONS);
 const COMMONS_AMT2 = TOTAL_COMMONS;
-
 const ZOMBIES_AMT1 = TOTAL_COMMONS + half(TOTAL_ZOMBIES);
-const ZOMBIES_MAGIC1 = ZOMBIES_AMT1 + half(ZOMBIES_MAGICS);
-const ZOMBIES_MAGIC2 = ZOMBIES_MAGIC1 + half(ZOMBIES_MAGICS);
 const ZOMBIES_AMT2 = TOTAL_ZOMBIES + TOTAL_COMMONS;
-
 const APES_AMT1 = ZOMBIES_AMT2 + half(TOTAL_APES);
-const APES_MAGIC1 = APES_AMT1 + half(APES_MAGICS);
-const APES_MAGIC2 = APES_MAGIC1 + half(APES_MAGICS);
 const APES_AMT2 = TOTAL_APES + TOTAL_COMMONS + TOTAL_ZOMBIES;
-
 const ALIENS_AMT1 = APES_AMT2 + half(TOTAL_ALIENS);
-const ALIENS_MAGIC1 = ALIENS_AMT1 + half(ALIENS_MAGICS);
-const ALIENS_MAGIC2 = ALIENS_MAGIC1 + half(ALIENS_MAGICS);
 const ALIENS_AMT2 = TOTAL_RUN_AMOUNT;
-
-// ^ NOT TOUCHING IT LOL.
 
 const BACKGROUND_LAYER = {
 	name: "Background",
@@ -79,7 +60,6 @@ const SPECIAL_MOUTH = {
 
 const layerConfigurations = [
 	// --- COMMONS ---
-
 	// commons w/ hair & headphones - ALT TRAITS
 	{
 		growEditionSizeTo: COMMONS_AMT1_ALT,
@@ -105,32 +85,6 @@ const layerConfigurations = [
 			{ name: "Hair" },
 			{ name: "Headphones" },
 			{ name: "Smoke" },
-		],
-	},
-	// magic commons w/ hair & headphones
-	{
-		growEditionSizeTo: COMMONS_MAGIC1,
-		layersOrder: [
-			BACKGROUND_LAYER,
-			{ name: "Type" },
-			OUTLINE_LAYER,
-			{ name: "Mouth" },
-			{ name: "Hair" },
-			{ name: "Headphones" },
-			{ name: "Magic" },
-		],
-	},
-	// magic commons w/ headware
-	{
-		growEditionSizeTo: COMMONS_MAGIC2,
-		layersOrder: [
-			BACKGROUND_LAYER,
-			{ name: "Type" },
-			OUTLINE_LAYER,
-			{ name: "Mouth" },
-			{ name: "Earring" },
-			{ name: "Headwear" },
-			{ name: "Magic" },
 		],
 	},
 	// commons w/ headware - ALT TRAITS
@@ -162,7 +116,6 @@ const layerConfigurations = [
 	},
 
 	//--- ZOMBIES ---
-
 	// zombies w/ hair & headphones
 	{
 		growEditionSizeTo: ZOMBIES_AMT1,
@@ -173,30 +126,6 @@ const layerConfigurations = [
 			{ name: "Hair" },
 			{ name: "Headphones" },
 			{ name: "Smoke" },
-		],
-	},
-	// magic zombies w/ hair & headphones
-	{
-		growEditionSizeTo: ZOMBIES_MAGIC2,
-		layersOrder: [
-			BACKGROUND_LAYER,
-			{ name: "Zombie" },
-			OUTLINE_LAYER,
-			{ name: "Hair" },
-			{ name: "Headphones" },
-			{ name: "Magic" },
-		],
-	},
-	// magic zombies w/ headware
-	{
-		growEditionSizeTo: ZOMBIES_MAGIC2,
-		layersOrder: [
-			BACKGROUND_LAYER,
-			{ name: "Zombie" },
-			OUTLINE_LAYER,
-			{ name: "Headwear" },
-			{ name: "Earring" },
-			{ name: "Magic" },
 		],
 	},
 	// zombies w/ headware
@@ -213,7 +142,6 @@ const layerConfigurations = [
 	},
 
 	// --- APES ---
-
 	// apes w/ hair & headphones
 	{
 		growEditionSizeTo: APES_AMT1,
@@ -224,30 +152,6 @@ const layerConfigurations = [
 			{ name: "Eyewear" },
 			{ name: "Hair" },
 			{ name: "Headphones" },
-		],
-	},
-	// magic apes w/ hair & headphones
-	{
-		growEditionSizeTo: APES_MAGIC1,
-		layersOrder: [
-			BACKGROUND_LAYER,
-			{ name: "Ape" },
-			OUTLINE_LAYER,
-			{ name: "Eyewear" },
-			{ name: "Hair" },
-			{ name: "Headphones" },
-		],
-	},
-	// magic apes w/ headware
-	{
-		growEditionSizeTo: APES_MAGIC2,
-		layersOrder: [
-			BACKGROUND_LAYER,
-			{ name: "Ape" },
-			OUTLINE_LAYER,
-			{ name: "Earring" },
-			{ name: "Eyewear" },
-			{ name: "Headwear" },
 		],
 	},
 	// apes w/ headware
@@ -264,7 +168,6 @@ const layerConfigurations = [
 	},
 
 	// --- ALIENS ---
-
 	// aliens /w hair & headphones
 	{
 		growEditionSizeTo: ALIENS_AMT1,
@@ -275,30 +178,6 @@ const layerConfigurations = [
 			{ name: "Hair" },
 			{ name: "Headphones" },
 			{ name: "Smoke" },
-		],
-	},
-	// magic aliens /w hair & headphones
-	{
-		growEditionSizeTo: ALIENS_MAGIC1,
-		layersOrder: [
-			BACKGROUND_LAYER,
-			{ name: "Alien" },
-			OUTLINE_LAYER,
-			{ name: "Hair" },
-			{ name: "Headphones" },
-			{ name: "Magic" },
-		],
-	},
-	// magic aliens /w headware
-	{
-		growEditionSizeTo: ALIENS_MAGIC2,
-		layersOrder: [
-			BACKGROUND_LAYER,
-			{ name: "Alien" },
-			OUTLINE_LAYER,
-			{ name: "Earring" },
-			{ name: "Headwear" },
-			{ name: "Magic" },
 		],
 	},
 	// aliens /w headware
@@ -320,8 +199,8 @@ const shuffleLayerConfigurations = true;
 const debugLogs = false;
 
 const format = {
-	width: 512,
-	height: 512,
+	width: 500,
+	height: 500,
 	smoothing: false,
 };
 
@@ -362,7 +241,7 @@ const extraMetadata = {};
 
 const rarityDelimiter = "#";
 
-const uniqueDnaTorrance = 10000;
+const uniqueDnaTorrance = 6699;
 
 const preview = {
 	thumbPerRow: 100,

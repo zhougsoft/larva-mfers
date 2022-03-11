@@ -124,16 +124,80 @@ const drawBackground = () => {
 	ctx.fillRect(0, 0, format.width, format.height);
 };
 
+function getRandomNum(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const addMetadata = (_dna, _edition) => {
+	// ---------------------------------------- METADATA TWEAKS DOWN HERE
+
+	const STAT_POOL = 7;
+
+	const statMap = new Array(5).fill(1);
+
+	for (let i = 0; i < STAT_POOL; i++) {
+		statMap[getRandomNum(0, 4)] += 1;
+	}
+
+  const stats = {
+    slime: statMap[0],
+    speed: statMap[1],
+    spice: statMap[2],
+    stealth: statMap[3],
+    stink: statMap[4],
+  }
+
+	// hook intercept the attributes and add custom hardcoded ones
+	const attributes = [
+		...attributesList,
+		{
+			trait_type: "Slime",
+			value: stats.slime,
+		},
+		{
+			trait_type: "Speed",
+			value: stats.speed,
+		},
+		{
+			trait_type: "Spice",
+			value: stats.spice,
+		},
+		{
+			trait_type: "Stealth",
+			value: stats.stealth,
+		},
+		{
+			trait_type: "Stink",
+			value: stats.stink,
+		},
+	];
+
 	let tempMetadata = {
+		edition: _edition,
 		name: `${namePrefix} #${_edition}`,
 		description: description,
 		image: `${baseUri}/${_edition}.png`,
 		dna: sha1(_dna),
-		edition: _edition,
-		...extraMetadata,
-		attributes: attributesList,
+		lucky_number: getRandomNum(1, 100),
+    stats,
+		attributes,
+		derived_from: [
+			{
+				name: "mfers",
+				network: "Ethereum",
+				src: "0x79FCDEF22feeD20eDDacbB2587640e45491b757f",
+			},
+			{
+				name: "Larva Lads",
+				network: "Ethereum",
+				src: "0x5755Ab845dDEaB27E1cfCe00cd629B2e135Acc3d",
+			},
+		],
 	};
+
+	// ---------------------------------------- ^ METADATA TWEAKS UP HERE
 
 	metadataList.push(tempMetadata);
 	attributesList = [];

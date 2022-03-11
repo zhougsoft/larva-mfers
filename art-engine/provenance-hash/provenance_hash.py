@@ -1,7 +1,7 @@
 import os
 import hashlib
 
-imgCount     = 10000                    # <-- How many images are there?
+imgCount     = 6699                    # <-- How many images are there?
 outputFolder = '../build/images'        # <-- Where are they?
 fmt          = "png"                    # <-- What format / file extension?
 
