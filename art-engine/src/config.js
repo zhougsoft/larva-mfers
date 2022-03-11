@@ -10,11 +10,11 @@ const description =
 const baseUri = "ipfs://REPLACE_WITH_BASE_URI";
 const cutoutUri = "ipfs://REPLACE_WITH_CUTOUT_URI";
 
-// PROD - TOTAL SUPPLY: 6699
-const TOTAL_COMMONS = 5699; // how many commons will exist
-const TOTAL_ZOMBIES = 500; // how many zombies will exist
+// PROD - TOTAL SUPPLY: 6300
+const TOTAL_COMMONS = 5300; // how many commons will exist
+const TOTAL_ZOMBIES = 450; // how many zombies will exist
 const TOTAL_APES = 450; // how many apes will exist
-const TOTAL_ALIENS = 50; // how many aliens will exist
+const TOTAL_ALIENS = 100; // how many aliens will exist
 
 // debug size
 // const TOTAL_COMMONS = 5;

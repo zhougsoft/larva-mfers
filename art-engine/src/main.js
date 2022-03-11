@@ -158,14 +158,14 @@ const addMetadata = (_dna, _edition) => {
 	const { type, zombie, ape, alien } = attrObj;
 
 	let larvaType;
-	let statPool;
+	let statPool = 10;
 
 	if (!!alien) {
 		larvaType = alien;
-		statPool = 13;
+		statPool = 12;
 	} else if (!!ape) {
 		larvaType = ape;
-		statPool = 12;
+		statPool = 11;
 	} else if (!!zombie) {
 		larvaType = zombie;
 		statPool = 11;
