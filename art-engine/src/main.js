@@ -151,14 +151,12 @@ const addMetadata = (_dna, _edition) => {
 	let attrObj = {};
 	for (attr of attributesList) {
 		const attrName = attr.trait_type;
-
 		attrObj[attrName.toLowerCase()] = attr.value.toLowerCase();
 	}
-
 	const { type, zombie, ape, alien } = attrObj;
 
 	let larvaType;
-	let statPool = 10;
+	let statPool;
 
 	if (!!alien) {
 		larvaType = alien;
@@ -229,7 +227,6 @@ const addMetadata = (_dna, _edition) => {
 		name: `${namePrefix} #${_edition}`,
 		description: description,
 		image: `${baseUri}/${_edition}.png`,
-		image: `${cutoutUri}/${_edition}.png`,
 		image_cutout: `${cutoutUri}/${_edition}.png`,
 		dna: sha1(_dna),
 		lucky_number: getRandomNum(1, 100),

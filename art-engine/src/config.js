@@ -7,8 +7,8 @@ const network = NETWORK.eth;
 const namePrefix = "larva mfer";
 const description =
 	"Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. Created under the CC0 license by computerart.eth, zhoug.eth, s34nm4c.eth & sendkevin.eth \n\nThis project is in the public domain, feel free to use Larva Mfers in any way you want.";
-const baseUri = "ipfs://REPLACE_WITH_BASE_URI";
-const cutoutUri = "ipfs://REPLACE_WITH_CUTOUT_URI";
+const baseUri = "ipfs://REPLACE_WITH_IMG_CID";
+const cutoutUri = "ipfs://REPLACE_WITH_CUTOUT_CID";
 
 // PROD - TOTAL SUPPLY: 6300
 const TOTAL_COMMONS = 5300; // how many commons will exist
