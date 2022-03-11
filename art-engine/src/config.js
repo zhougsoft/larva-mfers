@@ -6,21 +6,21 @@ const network = NETWORK.eth;
 // General metadata for Ethereum
 const namePrefix = "larva mfer";
 const description =
-	"Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. This project is in the public domain, feel free to use Larva Mfers in any way you want.";
-const baseUri = "ipfs://REPLACE";
+	"Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. Created under the CC0 license by computerart.eth, zhoug.eth, s34nm4c.eth & sendkevin.eth \n\nThis project is in the public domain, feel free to use Larva Mfers in any way you want.";
+const baseUri = "ipfs://REPLACE_WITH_BASE_URI";
+const cutoutUri = "ipfs://REPLACE_WITH_CUTOUT_URI";
 
 // PROD - TOTAL SUPPLY: 6699
-// const TOTAL_COMMONS = 5699; // how many commons will exist
-// const TOTAL_ZOMBIES = 500; // how many zombies will exist
-// const TOTAL_APES = 450; // how many apes will exist
-// const TOTAL_ALIENS = 50; // how many aliens will exist
-
+const TOTAL_COMMONS = 5699; // how many commons will exist
+const TOTAL_ZOMBIES = 500; // how many zombies will exist
+const TOTAL_APES = 450; // how many apes will exist
+const TOTAL_ALIENS = 50; // how many aliens will exist
 
 // debug size
-const TOTAL_COMMONS = 5;
-const TOTAL_ZOMBIES = 2;
-const TOTAL_APES = 2;
-const TOTAL_ALIENS = 1;
+// const TOTAL_COMMONS = 5;
+// const TOTAL_ZOMBIES = 2;
+// const TOTAL_APES = 2;
+// const TOTAL_ALIENS = 1;
 
 const half = num => Math.round(num / 2);
 const quarter = num => Math.round(num / 4);
@@ -262,6 +262,7 @@ const preview_gif = {
 module.exports = {
 	format,
 	baseUri,
+	cutoutUri,
 	description,
 	background,
 	uniqueDnaTorrance,

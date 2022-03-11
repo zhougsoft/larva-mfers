@@ -8,6 +8,7 @@ const layersDir = `${basePath}/layers`;
 const {
 	format,
 	baseUri,
+	cutoutUri,
 	description,
 	background,
 	uniqueDnaTorrance,
@@ -228,6 +229,8 @@ const addMetadata = (_dna, _edition) => {
 		name: `${namePrefix} #${_edition}`,
 		description: description,
 		image: `${baseUri}/${_edition}.png`,
+		image: `${cutoutUri}/${_edition}.png`,
+		image_cutout: `${cutoutUri}/${_edition}.png`,
 		dna: sha1(_dna),
 		lucky_number: getRandomNum(1, 100),
 		stats,

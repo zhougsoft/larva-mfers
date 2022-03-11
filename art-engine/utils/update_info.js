@@ -3,9 +3,13 @@ const fs = require("fs");
 
 const {
 	baseUri,
+	cutoutUri,
 	description,
 	namePrefix,
 } = require(`${basePath}/src/config.js`);
+
+
+ // TODO: PUT CUTOUT URI WHERE IT NEEDS TO BE
 
 // read json data
 let rawdata = fs.readFileSync(`${basePath}/build/json/_metadata.json`);
@@ -15,6 +19,7 @@ data.forEach(item => {
 	item.name = `${namePrefix} #${item.edition}`;
 	item.description = description;
 	item.image = `${baseUri}/${item.edition}.png`;
+	item.image_cutout = `${cutoutUri}/${item.edition}.png`;
 
 	fs.writeFileSync(
 		`${basePath}/build/json/${item.edition}.json`,
@@ -28,5 +33,6 @@ fs.writeFileSync(
 );
 
 console.log(`Updated baseUri for images to ===> ${baseUri}`);
-console.log(`Updated description for images to ===> ${description}`);
-console.log(`Updated name prefix for images to ===> ${namePrefix}`);
+console.log(`Updated cutoutUri for cutouts to ===> ${cutoutUri}`);
+console.log(`Updated description to ===> ${description}`);
+console.log(`Updated name prefix to ===> ${namePrefix}`);
