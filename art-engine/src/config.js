@@ -10,17 +10,17 @@ const description =
 const baseUri = "ipfs://REPLACE";
 
 // PROD - TOTAL SUPPLY: 6699
-// const TOTAL_COMMONS = 5699; // how many commons will exist
-// const TOTAL_ZOMBIES = 500; // how many zombies will exist
-// const TOTAL_APES = 450; // how many apes will exist
-// const TOTAL_ALIENS = 50; // how many aliens will exist
+const TOTAL_COMMONS = 5699; // how many commons will exist
+const TOTAL_ZOMBIES = 500; // how many zombies will exist
+const TOTAL_APES = 450; // how many apes will exist
+const TOTAL_ALIENS = 50; // how many aliens will exist
 
 
 // debug size
-const TOTAL_COMMONS = 15;
-const TOTAL_ZOMBIES = 5;
-const TOTAL_APES = 5;
-const TOTAL_ALIENS = 5;
+// const TOTAL_COMMONS = 15;
+// const TOTAL_ZOMBIES = 5;
+// const TOTAL_APES = 5;
+// const TOTAL_ALIENS = 5;
 
 const half = num => Math.round(num / 2);
 const quarter = num => Math.round(num / 4);

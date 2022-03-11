@@ -133,21 +133,51 @@ function getRandomNum(min, max) {
 const addMetadata = (_dna, _edition) => {
 	// ---------------------------------------- METADATA TWEAKS DOWN HERE
 
-	const STAT_POOL = 7;
+	let attrObj = {};
+	for (attr of attributesList) {
+		const attrName = attr.trait_type;
+
+		attrObj[attrName.toLowerCase()] = attr.value.toLowerCase();
+	}
+
+	const { type, zombie, ape, alien } = attrObj;
+
+	let larvaType;
+	let statPool;
+
+	if (!!alien) {
+		larvaType = alien;
+		statPool = 13;
+	} else if (!!ape) {
+		larvaType = ape;
+		statPool = 12;
+	} else if (!!zombie) {
+		larvaType = zombie;
+		statPool = 11;
+	} else {
+		larvaType = type;
+		statPool = 10;
+	}
 
 	const statMap = new Array(5).fill(1);
 
-	for (let i = 0; i < STAT_POOL; i++) {
-		statMap[getRandomNum(0, 4)] += 1;
+	for (let i = 0; i < statPool; i++) {
+		const randomStat = getRandomNum(0, 4);
+		if (statMap[randomStat] < 5) {
+			statMap[randomStat] += 1;
+		} else {
+			continue;
+		}
 	}
 
-  const stats = {
-    slime: statMap[0],
-    speed: statMap[1],
-    spice: statMap[2],
-    stealth: statMap[3],
-    stink: statMap[4],
-  }
+	const stats = {
+		type: larvaType,
+		slime: statMap[0],
+		speed: statMap[1],
+		spice: statMap[2],
+		stealth: statMap[3],
+		stink: statMap[4],
+	};
 
 	// hook intercept the attributes and add custom hardcoded ones
 	const attributes = [
@@ -155,22 +185,27 @@ const addMetadata = (_dna, _edition) => {
 		{
 			trait_type: "Slime",
 			value: stats.slime,
+			max_value: 5,
 		},
 		{
 			trait_type: "Speed",
 			value: stats.speed,
+			max_value: 5,
 		},
 		{
 			trait_type: "Spice",
 			value: stats.spice,
+			max_value: 5,
 		},
 		{
 			trait_type: "Stealth",
 			value: stats.stealth,
+			max_value: 5,
 		},
 		{
 			trait_type: "Stink",
 			value: stats.stink,
+			max_value: 5,
 		},
 	];
 
@@ -181,7 +216,7 @@ const addMetadata = (_dna, _edition) => {
 		image: `${baseUri}/${_edition}.png`,
 		dna: sha1(_dna),
 		lucky_number: getRandomNum(1, 100),
-    stats,
+		stats,
 		attributes,
 		derived_from: [
 			{
