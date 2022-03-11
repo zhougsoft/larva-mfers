@@ -6,9 +6,9 @@ const network = NETWORK.eth;
 // General metadata for Ethereum
 const namePrefix = "larva mfer";
 const description =
-	"Larva Mfers are a play on mfers, Larva Lads, and everything they were a play on as well. Created under the CC0 license by computerart.eth, zhoug.eth, s34nm4c.eth & sendkevin.eth \n\nThis project is in the public domain, feel free to use Larva Mfers in any way you want.";
-const baseUri = "ipfs://REPLACE_WITH_IMG_CID";
-const cutoutUri = "ipfs://REPLACE_WITH_CUTOUT_CID";
+	"Larva Mfers are a play on mfers, Larva Lads, and everything in between. Created under the CC0 license.\n\nThis project is in the public domain, feel encouraged to use Larva Mfers in any way you want.";
+const baseUri = "ipfs://UPDATE_WITH_IMG_CID";
+const cutoutUri = "ipfs://UPDATE_WITH_CUTOUT_CID";
 
 // PROD - TOTAL SUPPLY: 6300
 const TOTAL_COMMONS = 5300; // how many commons will exist
@@ -121,7 +121,7 @@ const layerConfigurations = [
 		growEditionSizeTo: ZOMBIES_AMT1,
 		layersOrder: [
 			BACKGROUND_LAYER,
-			{ name: "Zombie" },
+			{ name: "Zombie", options: { displayName: "Type" } },
 			OUTLINE_LAYER,
 			{ name: "Hair" },
 			{ name: "Headphones" },
@@ -133,7 +133,7 @@ const layerConfigurations = [
 		growEditionSizeTo: ZOMBIES_AMT2,
 		layersOrder: [
 			BACKGROUND_LAYER,
-			{ name: "Zombie" },
+			{ name: "Zombie", options: { displayName: "Type" } },
 			OUTLINE_LAYER,
 			{ name: "Headwear" },
 			{ name: "Earring" },
@@ -147,7 +147,7 @@ const layerConfigurations = [
 		growEditionSizeTo: APES_AMT1,
 		layersOrder: [
 			BACKGROUND_LAYER,
-			{ name: "Ape" },
+			{ name: "Ape", options: { displayName: "Type" } },
 			OUTLINE_LAYER,
 			{ name: "Eyewear" },
 			{ name: "Hair" },
@@ -159,7 +159,7 @@ const layerConfigurations = [
 		growEditionSizeTo: APES_AMT2,
 		layersOrder: [
 			BACKGROUND_LAYER,
-			{ name: "Ape" },
+			{ name: "Ape", options: { displayName: "Type" } },
 			OUTLINE_LAYER,
 			{ name: "Earring" },
 			{ name: "Eyewear" },
@@ -173,7 +173,7 @@ const layerConfigurations = [
 		growEditionSizeTo: ALIENS_AMT1,
 		layersOrder: [
 			BACKGROUND_LAYER,
-			{ name: "Alien" },
+			{ name: "Alien", options: { displayName: "Type" } },
 			OUTLINE_LAYER,
 			{ name: "Hair" },
 			{ name: "Headphones" },
@@ -185,7 +185,7 @@ const layerConfigurations = [
 		growEditionSizeTo: ALIENS_AMT2,
 		layersOrder: [
 			BACKGROUND_LAYER,
-			{ name: "Alien" },
+			{ name: "Alien", options: { displayName: "Type" } },
 			OUTLINE_LAYER,
 			{ name: "Earring" },
 			{ name: "Headwear" },

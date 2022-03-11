@@ -14,12 +14,8 @@
   "scripts": {
     "clean": "rm -rf build",
     "generate": "node index.js",
-    "rarity": "node utils/rarity.js",
-    "preview": "node utils/preview.js",
-    "pixelate": "node utils/pixelate.js",
-    "update_info": "node utils/update_info.js",
-    "preview_gif": "node utils/preview_gif.js",
-    "generate_metadata": "node utils/generate_metadata.js"
+    "SEPERATOR_DONT_RUN": "echo 'no'",
+    "update_info": "node utils/update_info.js"
   },
   "author": "Daniel Eugene Botha (HashLips)",
   "license": "MIT",
