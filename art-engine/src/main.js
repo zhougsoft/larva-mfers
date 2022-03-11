@@ -22,7 +22,9 @@ const {
 	gif,
 } = require(`${basePath}/src/config.js`);
 const canvas = createCanvas(format.width, format.height);
+const canvasCutout = createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
+const ctxCutout = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = format.smoothing;
 var metadataList = [];
 var attributesList = [];
@@ -427,8 +429,21 @@ const startCreating = async () => {
 				let results = constructLayerToDna(newDna, layers);
 				let loadedElements = [];
 
+				// ALT CUTOUT VERSION
+				let loadedElementsCutout = [];
+
 				results.forEach(layer => {
+
+					// HOOK INTO HERE AND CREATE ALT NO-BG VERSION
+					// populate loadedElementsCutout with all except BG!
+					console.log('IS THIS LAYER THE BACKGROUND? -> ', layer.name);
+					// if layer.name !== "Background" then:
+					// loadedElementsCutout.push(loadLayerImg(layer))
+
+					
+					// main NFT image:
 					loadedElements.push(loadLayerImg(layer));
+
 				});
 
 				await Promise.all(loadedElements).then(renderObjectArray => {
