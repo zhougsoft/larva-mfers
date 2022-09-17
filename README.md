@@ -1,6 +1,6 @@
 # 🐛 larva mfers 🐛
 
-## IT'S ALL CC0, GO NUTZ! <3
+### IT'S ALL CC0, GO NUTZ! <3
 
 repo for the larva mfers backend code + art gen!
 excuse the mess ;)
